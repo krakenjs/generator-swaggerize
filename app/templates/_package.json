@@ -36,8 +36,7 @@
         "test" : "tape resources/tests/*.js",
         "cover" : "istanbul cover tape -- resources/tests/*.js",
         "lint" : "jshint -c .jshintrc index.js resources/handlers lib",
-        "run": "node index.js",
-        "postinstall": "swaggerize --api config/api.json --handlers handlers --tests tests"
+        "run": "node index.js"
     },
     "main" : "./lib/index",
     "readme" : "README.md"

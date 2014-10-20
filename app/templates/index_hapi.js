@@ -1,19 +1,18 @@
-var http = require('http');
-var express = require('express');
-var swaggerize = require('swaggerize-express');
+'use strict';
 
-app = express();
+var Hapi = require('hapi'),
+    Swaggerize = require('swaggerize-hapi');
 
-var server = http.createServer(app);
+var server = new Hapi.Server();
 
-var swagger = swaggerize({
-    api: require('./config/api.json'),
-    docs: '/api-docs',
-    handlers: './handlers'
+server.pack.register({
+    plugin: Swaggerize,
+    options: {
+        api: require('./config/pets.json'),
+        handlers: './handlers'
+    }
 });
 
-app.use(swagger);
-
-server.listen(8000, 'localhost', function () {
-    swagger.setUrl('http://' + server.address().address + ':' + server.address().port);
+server.start(function () {
+    server.plugins.swaggerize.setUrl(server.info.host + ':' + server.info.port);
 });
