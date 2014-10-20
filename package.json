@@ -22,9 +22,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/tlivings/swaggerize-generator.git"
+    "url": "git://github.com/krakenjs/swaggerize-generator.git"
   },
-  "bugs": "http://github.com/tlivings/swaggerize-generator/issues",
+  "bugs": "http://github.com/krakenjs/swaggerize-generator/issues",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
