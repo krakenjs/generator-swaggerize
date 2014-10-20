@@ -17,7 +17,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             if (!this.options['skip-install']) {
                 this.npmInstall();
             }
-        })
+        });
     },
 
     askFor: function () {
@@ -65,10 +65,10 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             try {
 				this.apiPath = path.resolve(props.apiPath);
 			}
-			catch(error) {
+			catch (error) {
 				done(error);
 				return;
-			};
+			}
 
 			done();
         }.bind(this));
@@ -107,7 +107,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         this.copy('jshintrc', '.jshintrc');
         this.copy('gitignore', '.gitignore');
         this.copy('npmignore', '.npmignore');
-        this.copy('index_'+this.framework+'.js', 'index.js');
+        this.copy('index_' + this.framework + '.js', 'index.js');
 
         this.template('_package.json', 'package.json');
         this.template('_README.md', 'README.md');
