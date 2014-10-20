@@ -6,14 +6,22 @@ var Test = require('tape'),
     Swaggerize = require('swaggerize-hapi');
 
 Test('api', function (t) {
-    var server = new Hapi.Server();
+    var server;
 
-    server.pack.register({
-        plugin: Swaggerize,
-        options: {
-            api: require('<%=apiPath%>'),
-            handlers: Path.join(__dirname, '<%=handlers%>')
-        }
+    t.test('server', function (t) {
+        t.plan(1);
+
+        server = new Hapi.Server();
+
+        server.pack.register({
+            plugin: Swaggerize,
+            options: {
+                api: require('<%=apiPath%>'),
+                handlers: Path.join(__dirname, '<%=handlers%>')
+            }
+        }, function (err) {
+            t.error(err, 'No error.');
+        });
     });
 
     <%_.forEach(operations, function (operation) {%>
@@ -63,4 +71,3 @@ Test('api', function (t) {
     <%});%>
 
 });
-x

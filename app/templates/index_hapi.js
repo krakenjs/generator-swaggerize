@@ -11,8 +11,8 @@ server.pack.register({
         api: require('./config/pets.json'),
         handlers: './handlers'
     }
-});
-
-server.start(function () {
-    server.plugins.swaggerize.setUrl(server.info.host + ':' + server.info.port);
+}, function (error) {
+    server.start(function () {
+        server.plugins.swaggerize.setUrl(server.info.host + ':' + server.info.port);
+    });
 });
