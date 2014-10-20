@@ -10,19 +10,19 @@ Generates projects for:
 
 ### Usage
 
-1. Install yeoman's `yo` if you haven't already:
+\**1.** Install yeoman's `yo` if you haven't already:
 
 ```
 $ npm install -g yo
 ```
 
-2. Install `generator-swaggerize`:
+\**2.** Install `generator-swaggerize`:
 
 ```
 $ npm install -g generator-swaggerize
 ```
 
-3. Create a project:
+\**3.** Create a project:
 
 ```
 $ yo swaggerize
