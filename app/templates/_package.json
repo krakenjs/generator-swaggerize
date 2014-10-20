@@ -33,11 +33,9 @@
         "lint": "jshint -c .jshintrc lib/**/*.js"
     },
     "scripts" : {
-        "test" : "tape resources/tests/*.js",
-        "cover" : "istanbul cover tape -- resources/tests/*.js",
-        "lint" : "jshint -c .jshintrc index.js resources/handlers lib",
-        "run": "node index.js"
+        "test" : "tape tests/*.js",
+        "cover" : "istanbul cover tape -- tests/*.js",
+        "lint" : "jshint -c .jshintrc index.js handlers lib"
     },
-    "main" : "./lib/index",
-    "readme" : "README.md"
+    "main" : "./index"
 }
