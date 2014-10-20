@@ -1,21 +1,20 @@
 'use strict';
 
-var test = require('tape'),
-    path = require('path'),
-    express = require('express'),
-    swaggerize = require('swaggerize-express'),
-    request = require('supertest');
+var Test = require('tape'),
+    Path = require('path'),
+    Hapi = require('hapi'),
+    Swaggerize = require('swaggerize-hapi');
 
-test('api', function (t) {
-    var app = express();
+Test('api', function (t) {
+    var server = new Hapi.Server();
 
-    <%_.forEach(operations, function (operation) { if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put') { %>
-    app.use(require('body-parser')());<%}});%>
-
-    app.use(swaggerize({
-        api: require('<%=apiPath%>'),
-        handlers: path.join(__dirname, '<%=handlers%>')
-    }));
+    server.pack.register({
+        plugin: Swaggerize,
+        options: {
+            api: require('<%=apiPath%>'),
+            handlers: Path.join(__dirname, '<%=handlers%>')
+        }
+    });
 
     <%_.forEach(operations, function (operation) {%>
     t.test('test <%=operation.method%> <%=operation.path%>', function (t) {
@@ -44,17 +43,20 @@ test('api', function (t) {
                     body = models[param.schema.$ref.slice(param.schema.$ref.lastIndexOf('/') + 1)];
                 }
             });
-        }%>t.plan(2);
+        }%>t.plan(1);
         <%if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put'){%>
         var body = {<%_.forEach(Object.keys(body).filter(function (k) { return !!body[k]; }), function (k, i) {%>
             '<%=k%>': <%=JSON.stringify(body[k])%><%if (i < Object.keys(body).filter(function (k) { return !!body[k]; }).length - 1) {%>, <%}%><%})%>
         };
         <%}%>
-
-        request(app).<%=operation.method.toLowerCase()%>('<%=resourcePath%><%=path%>')
-        .expect(200)<%if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put'){%>.send(body)<%}%>
-        .end(function (err, res) {
-            t.ok(!err, '<%=operation.method.toLowerCase()%> <%=operation.path%> no error.');
+        var options = {
+            method: '<%=operation.method.toLowerCase()%>',
+            url: '<%=resourcePath%><%=path%>'
+        };
+        <%if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put'){%>
+        options.payload = body;
+        <%}%>
+        server.inject(options, function (res) {
             t.strictEqual(res.statusCode, 200, '<%=operation.method.toLowerCase()%> <%=operation.path%> 200 status.');
         });
     });

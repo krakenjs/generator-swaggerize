@@ -10,8 +10,8 @@ module.exports = {
      * parameters: tags, limit
      * produces: application/json, application/xml, text/xml, text/html
      */
-    get: function findPets(req, res) {
-        res.send(500);
+    get: function findPets(req, reply) {
+        reply().code(500);
     }, 
     
     /**
@@ -19,8 +19,8 @@ module.exports = {
      * parameters: pet
      * produces: application/json
      */
-    post: function addPet(req, res) {
-        res.send(500);
+    post: function addPet(req, reply) {
+        reply().code(500);
     }
     
 };

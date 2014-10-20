@@ -10,8 +10,8 @@ module.exports = {
      * parameters: id
      * produces: application/json, application/xml, text/xml, text/html
      */
-    get: function findPetById(req, res) {
-        res.send(500);
+    get: function findPetById(req, reply) {
+        reply().code(500);
     }, 
     
     /**
@@ -19,8 +19,8 @@ module.exports = {
      * parameters: id
      * produces: 
      */
-    delete: function deletePet(req, res) {
-        res.send(500);
+    delete: function deletePet(req, reply) {
+        reply().code(500);
     }
     
 };

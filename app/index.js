@@ -26,8 +26,6 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         // have Yeoman greet the user
         console.log(chalk.magenta('Swaggerize Generator'));
 
-        this.framework = 'express';
-
         var prompts = [
             {
                 name: 'appname',
@@ -53,7 +51,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             {
                 name: 'framework',
                 message: 'Express or Hapi:',
-                default: this.framework
+                default: 'express'
             }
         ];
 
@@ -62,6 +60,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             this.creatorName = props.creatorName;
             this.githubUser = props.githubUser;
             this.email = props.email;
+            this.framework = props.framework || 'express';
 
             try {
 				this.apiPath = path.resolve(props.apiPath);
