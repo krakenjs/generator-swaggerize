@@ -106,6 +106,45 @@ test('swagger-express generator', function (t) {
         });
     });
 
+    t.test('supports url', function (t) {
+
+        setup(function () {
+            var expected = [
+                '.jshintrc',
+                '.gitignore',
+                '.npmignore',
+                'README.md',
+                'index.js',
+                'package.json',
+                'tests',
+                'tests/test_pets.js',
+                'config',
+                'config/petstore.json',
+                'handlers',
+                'handlers/pets.js',
+                'models',
+                'models/error.js',
+                'models/pet.js'
+            ];
+
+            helpers.mockPrompt(app, {
+                'appname' : 'mymodule',
+                'apiPath' : 'https://raw.githubusercontent.com/wordnik/swagger-spec/master/examples/v2.0/json/petstore.json',
+                'framework': 'hapi'
+            });
+
+            app.options['skip-install'] = true;
+
+            app.run({}, function () {
+                expected.forEach(function (file) {
+                    t.ok(fs.existsSync(file), 'file exists.');
+                });
+                t.end();
+            });
+        });
+    });
+
+
     t.test('bad framework', function (t) {
         t.plan(1);
 

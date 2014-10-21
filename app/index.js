@@ -6,8 +6,8 @@ var util = require('util'),
     yeoman = require('yeoman-generator'),
     apischema = require('swaggerize-builder/lib/schema/swagger-spec/schemas/v2.0/schema.json'),
     builderUtils = require('swaggerize-builder/lib/utils'),
-    enjoi = require('enjoi'),
-    chalk = require('chalk');
+    wreck = require('wreck'),
+    enjoi = require('enjoi');
 
 var ModuleGenerator = yeoman.generators.Base.extend({
     init: function () {
@@ -23,8 +23,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
     askFor: function () {
         var done = this.async();
 
-        // have Yeoman greet the user
-        console.log(chalk.magenta('Swaggerize Generator'));
+        console.log('Swaggerize Generator');
 
         var prompts = [
             {
@@ -46,7 +45,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             },
             {
                 name: 'apiPath',
-                message: 'Path to swagger document:'
+                message: 'Path (or URL) to swagger document:'
             },
             {
                 name: 'framework',
@@ -56,31 +55,47 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         ];
 
         this.prompt(prompts, function (props) {
+            var self = this;
+
             this.appname = props.appname;
             this.creatorName = props.creatorName;
             this.githubUser = props.githubUser;
             this.email = props.email;
             this.framework = props.framework || 'express';
+            this.appRoot = path.join(this.destinationRoot(), this.appname);
 
-            try {
-				this.apiPath = path.resolve(props.apiPath);
-			}
-			catch (error) {
-				done(error);
-				return;
-			}
+            if (this.framework !== 'express' && this.framework !== 'hapi') {
+                done(new Error('Framework must be hapi or express'));
+                return;
+            }
 
-			done();
+            if (props.apiPath.indexOf('http') === 0) {
+                wreck.get(props.apiPath, function (err, res, body) {
+                    var fp = props.apiPath.split('/');
+
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+                    if (res.statusCode !== 200) {
+                        done(new Error('404: ' + props.apiPath));
+                        return;
+                    }
+                    self.apiPath = path.join(self.appRoot, 'config/' + fp[fp.length - 1]);
+                    self.api = JSON.parse(body);
+                    done();
+                });
+            }
+            else {
+                this.apiPath = path.resolve(props.apiPath);
+                done();
+            }
         }.bind(this));
     },
 
     root: function () {
-        this.appRoot = path.join(this.destinationRoot(), this.appname);
-
         if (process.cwd() !== this.appRoot) {
-
             this.mkdir(this.appRoot);
-
             process.chdir(this.appRoot);
         }
     },
@@ -88,12 +103,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
     validate: function () {
         var done = this.async();
 
-        if (this.framework !== 'express' && this.framework !== 'hapi') {
-            done(new Error('Framework must be hapi or express'));
-            return;
-        }
-
-        this.api = yeoman.file.readJSON(this.apiPath);
+        this.api = this.api || yeoman.file.readJSON(this.apiPath);
 
         enjoi(apischema).validate(this.api, function (error) {
             done(error);
@@ -102,7 +112,15 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
     app: function () {
         this.mkdir('config');
-        this.copy(this.apiPath, 'config/' + path.basename(this.apiPath));
+
+        //File
+        if (fs.existsSync(this.apiPath)) {
+            this.copy(this.apiPath, 'config/' + path.basename(this.apiPath));
+        }
+        //Url
+        else {
+            this.write(this.apiPath, JSON.stringify(this.api, null, 2));
+        }
 
         this.copy('jshintrc', '.jshintrc');
         this.copy('gitignore', '.gitignore');
