@@ -79,15 +79,16 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
             self = this;
 
-            this.appname = this.appname || props.appname;
+            this.appname = props.appname;
             this.creatorName = props.creatorName;
             this.githubUser = props.githubUser;
             this.email = props.email;
             this.framework = props.framework || 'express';
+            this.appRoot = path.basename(process.cwd()) === this.appname ? this.destinationRoot() : path.join(this.destinationRoot(), this.appname);
 
             if (this.only.length > 0) {
-                if (fs.existsSync(path.join(this.destinationRoot(), 'package.json'))) {
-                    pkg = yeoman.file.readJSON(path.join(this.destinationRoot(), 'package.json'));
+                if (fs.existsSync(path.join(this.appRoot, 'package.json'))) {
+                    pkg = yeoman.file.readJSON(path.join(this.appRoot, 'package.json'));
 
                     if (pkg.dependencies.hapi) {
                         this.framework = 'hapi';
@@ -112,7 +113,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                         done(new Error('404: ' + props.apiPath));
                         return;
                     }
-                    self.apiPath = path.join(self.destinationRoot(), 'config/' + fp[fp.length - 1]);
+                    self.apiPath = path.join(self.appRoot, 'config/' + fp[fp.length - 1]);
                     self.api = JSON.parse(body);
                     done();
                 });
@@ -125,9 +126,9 @@ var ModuleGenerator = yeoman.generators.Base.extend({
     },
 
     root: function () {
-        if (process.cwd() !== this.destinationRoot()) {
-            this.mkdir(this.destinationRoot());
-            process.chdir(this.destinationRoot());
+        if (process.cwd() !== this.appRoot) {
+            this.mkdir(this.appRoot);
+            process.chdir(this.appRoot);
         }
     },
 
@@ -228,7 +229,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             route = routes[routePath];
             pathnames = route.pathname.split('/');
 
-            file = path.join(self.destinationRoot(), 'handlers/' + pathnames.join('/') + '.js');
+            file = path.join(self.appRoot, 'handlers/' + pathnames.join('/') + '.js');
 
             self.template('_handler_' + self.framework + '.js', file, route);
         });
@@ -254,7 +255,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                 model.id = modelName;
             }
 
-            self.template('_model.js', path.join(self.destinationRoot(), 'models/' + fileName), model);
+            self.template('_model.js', path.join(self.appRoot, 'models/' + fileName), model);
         });
     },
 
@@ -271,9 +272,9 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         api = this.api;
         models = {};
 
-        apiPath = path.relative(path.join(self.destinationRoot(), 'tests'), path.join(self.destinationRoot(), 'config/' + path.basename(this.apiPath)));
-        modelsPath = path.join(self.destinationRoot(), 'models');
-        handlersPath = path.relative(path.join(self.destinationRoot(), 'tests'), path.join(self.destinationRoot(), 'handlers'));
+        apiPath = path.relative(path.join(self.appRoot, 'tests'), path.join(self.appRoot, 'config/' + path.basename(this.apiPath)));
+        modelsPath = path.join(self.appRoot, 'models');
+        handlersPath = path.relative(path.join(self.appRoot, 'tests'), path.join(self.appRoot, 'handlers'));
 
         if (api.definitions && modelsPath) {
 
@@ -282,7 +283,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
                 options = {};
                 modelSchema = api.definitions[key];
-                ModelCtor = require(path.join(self.destinationRoot(), 'models/' + key.toLowerCase() + '.js'));
+                ModelCtor = require(path.join(self.appRoot, 'models/' + key.toLowerCase() + '.js'));
 
                 Object.keys(modelSchema.properties).forEach(function (prop) {
                     var defaultValue;
@@ -337,7 +338,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                 operations.push(operation);
             });
 
-            fileName = path.join(self.destinationRoot(), 'tests/test' + opath.replace(/\//g, '_') + '.js');
+            fileName = path.join(self.appRoot, 'tests/test' + opath.replace(/\//g, '_') + '.js');
 
             self.template('_test_' + self.framework + '.js', fileName, {
                 apiPath: apiPath,

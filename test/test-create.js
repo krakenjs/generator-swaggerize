@@ -50,7 +50,7 @@ test('swagger-express generator', function (t) {
             ];
 
             helpers.mockPrompt(app, {
-                'appname' : 'mymodule',
+                'appname' : 'temp',
                 'apiPath' : path.join(__dirname, 'fixtures/pets.json')
             });
 
@@ -90,7 +90,7 @@ test('swagger-express generator', function (t) {
             ];
 
             helpers.mockPrompt(app, {
-                'appname' : 'mymodule',
+                'appname' : 'temp',
                 'apiPath' : path.join(__dirname, 'fixtures/pets.json'),
                 'framework': 'hapi'
             });
@@ -128,7 +128,7 @@ test('swagger-express generator', function (t) {
             ];
 
             helpers.mockPrompt(app, {
-                'appname' : 'mymodule',
+                'appname' : 'temp',
                 'apiPath' : 'https://raw.githubusercontent.com/wordnik/swagger-spec/master/examples/v2.0/json/petstore.json',
                 'framework': 'hapi'
             });
@@ -150,7 +150,7 @@ test('swagger-express generator', function (t) {
 
         setup(function () {
             helpers.mockPrompt(app, {
-                'appname' : 'mymodule',
+                'appname' : 'temp',
                 'apiPath' : path.join(__dirname, 'fixtures/pets.json'),
                 'framework': 'foobar'
             });
@@ -169,7 +169,7 @@ test('swagger-express generator', function (t) {
 
         setup(function () {
             helpers.mockPrompt(app, {
-                'appname' : 'mymodule',
+                'appname' : 'temp',
                 'apiPath' : path.join(__dirname, 'fixtures/badapi.json'),
             });
 
@@ -187,6 +187,7 @@ test('swagger-express generator', function (t) {
 
         setup(function () {
             helpers.mockPrompt(app, {
+                'appname': 'temp',
                 'apiPath' : 'https://raw.githubusercontent.com/wordnik/swagger-spec/master/examples/v2.0/json/petstore.json'
             });
 

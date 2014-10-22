@@ -3,7 +3,7 @@
 var Hapi = require('hapi'),
     Swaggerize = require('swaggerize-hapi');
 
-var server = new Hapi.Server();
+var server = new Hapi.Server(8000);
 
 server.pack.register({
     plugin: Swaggerize,
@@ -13,6 +13,6 @@ server.pack.register({
     }
 }, function (error) {
     server.start(function () {
-        server.plugins.swaggerize.setUrl(server.info.host + ':' + server.info.port);
+        server.plugins.swagger.setHost(server.info.host + ':' + server.info.port);
     });
 });
