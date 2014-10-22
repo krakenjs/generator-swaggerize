@@ -14,14 +14,29 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         this.pkg = yeoman.file.readJSON(path.join(__dirname, '../package.json'));
 
         this.on('end', function () {
-            if (!this.options['skip-install']) {
+            if (!this.options['skip-install'] && this.only.length === 0) {
                 this.npmInstall();
             }
         });
     },
 
     askFor: function () {
-        var done = this.async();
+        var self, done;
+
+        self = this;
+        done = this.async();
+        this.only = this.options['only'];
+
+        if (!this.only || this.only === true) {
+            this.only = [];
+        }
+        else {
+            this.only = this.only.split(',');
+        }
+
+        function all() {
+            return self.only.length === 0;
+        }
 
         console.log('Swaggerize Generator');
 
@@ -29,19 +44,23 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             {
                 name: 'appname',
                 message: 'What would you like to call this project:',
-                default : this.appname
+                default : this.appname,
+                when: all
             },
             {
                 name: 'creatorName',
-                message: 'Your name:'
+                message: 'Your name:',
+                when: all
             },
             {
                 name: 'githubUser',
-                message: 'Your github user name:'
+                message: 'Your github user name:',
+                when: all
             },
             {
                 name: 'email',
-                message: 'Your email:'
+                message: 'Your email:',
+                when: all
             },
             {
                 name: 'apiPath',
@@ -50,22 +69,35 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             {
                 name: 'framework',
                 message: 'Express or Hapi:',
-                default: 'express'
+                default: 'express',
+                when: all
             }
         ];
 
         this.prompt(prompts, function (props) {
-            var self = this;
+            var self, pkg;
 
-            this.appname = props.appname;
+            self = this;
+
+            this.appname = this.appname || props.appname;
             this.creatorName = props.creatorName;
             this.githubUser = props.githubUser;
             this.email = props.email;
             this.framework = props.framework || 'express';
             this.appRoot = path.join(this.destinationRoot(), this.appname);
 
+            if (this.only.length > 0) {
+                if (fs.existsSync(path.join(this.appRoot, 'package.json'))) {
+                    pkg = yeoman.file.readJSON(path.join(this.appRoot, 'package.json'));
+
+                    if (pkg.dependencies.hapi) {
+                        this.framework = 'hapi';
+                    }
+                }
+            }
+
             if (this.framework !== 'express' && this.framework !== 'hapi') {
-                done(new Error('Framework must be hapi or express'));
+                done(new Error('Unrecognized framework: ' + this.framework));
                 return;
             }
 
@@ -111,7 +143,17 @@ var ModuleGenerator = yeoman.generators.Base.extend({
     },
 
     app: function () {
-        this.mkdir('config');
+        if (this.only.length === 0) {
+            this.mkdir('config');
+
+            this.copy('jshintrc', '.jshintrc');
+            this.copy('gitignore', '.gitignore');
+            this.copy('npmignore', '.npmignore');
+            this.copy('index_' + this.framework + '.js', 'index.js');
+
+            this.template('_package.json', 'package.json');
+            this.template('_README.md', 'README.md');
+        }
 
         //File
         if (fs.existsSync(this.apiPath)) {
@@ -119,20 +161,19 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         }
         //Url
         else {
-            this.write(this.apiPath, JSON.stringify(this.api, null, 2));
+            if (!fs.existsSync(this.apiPath)) {
+                this.write(this.apiPath, JSON.stringify(this.api, null, 2));
+            }
         }
 
-        this.copy('jshintrc', '.jshintrc');
-        this.copy('gitignore', '.gitignore');
-        this.copy('npmignore', '.npmignore');
-        this.copy('index_' + this.framework + '.js', 'index.js');
-
-        this.template('_package.json', 'package.json');
-        this.template('_README.md', 'README.md');
     },
 
     handlers: function () {
         var routes, self;
+
+        if (this.only.length > 0 && !~this.only.indexOf('handlers')) {
+            return;
+        }
 
         self = this;
         routes = {};
@@ -197,6 +238,10 @@ var ModuleGenerator = yeoman.generators.Base.extend({
     models: function () {
         var self = this;
 
+        if (this.only.length > 0 && !~this.only.indexOf('models')) {
+            return;
+        }
+
         this.mkdir('models');
 
         Object.keys(this.api.definitions || {}).forEach(function (modelName) {
@@ -216,6 +261,10 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
     tests: function () {
         var self, api, models, resourcePath, handlersPath, modelsPath, apiPath;
+
+        if (this.only.length > 0 && !~this.only.indexOf('tests')) {
+            return;
+        }
 
         this.mkdir('tests');
 

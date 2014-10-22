@@ -182,4 +182,21 @@ test('swagger-express generator', function (t) {
         });
     });
 
+    t.test('supports --only', function (t) {
+        t.plan(1);
+
+        setup(function () {
+            helpers.mockPrompt(app, {
+                'apiPath' : 'https://raw.githubusercontent.com/wordnik/swagger-spec/master/examples/v2.0/json/petstore.json'
+            });
+
+            app.options['skip-install'] = true;
+            app.options['only'] = 'tests,handlers,models';
+
+            t.doesNotThrow(function () {
+                app.run({}, function () {
+                });
+            }, 'does not throw.');
+        });
+    });
 });

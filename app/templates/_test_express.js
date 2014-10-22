@@ -44,7 +44,7 @@ test('api', function (t) {
                     body = models[param.schema.$ref.slice(param.schema.$ref.lastIndexOf('/') + 1)];
                 }
             });
-        }%>t.plan(1);
+        }%>t.plan(2);
         <%if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put'){%>
         var body = {<%_.forEach(Object.keys(body).filter(function (k) { return !!body[k]; }), function (k, i) {%>
             '<%=k%>': <%=JSON.stringify(body[k])%><%if (i < Object.keys(body).filter(function (k) { return !!body[k]; }).length - 1) {%>, <%}%><%})%>
