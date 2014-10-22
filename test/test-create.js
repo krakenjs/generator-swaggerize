@@ -58,7 +58,7 @@ test('swagger-express generator', function (t) {
 
             app.run({}, function () {
                 expected.forEach(function (file) {
-                    t.ok(fs.existsSync(file), 'file exists.');
+                    t.ok(fs.existsSync(path.join(testDir, file)), 'file exists.');
                 });
                 t.end();
             });
@@ -99,7 +99,7 @@ test('swagger-express generator', function (t) {
 
             app.run({}, function () {
                 expected.forEach(function (file) {
-                    t.ok(fs.existsSync(file), 'file exists.');
+                    t.ok(fs.existsSync(path.join(testDir, file)), 'file exists.');
                 });
                 t.end();
             });
@@ -137,7 +137,7 @@ test('swagger-express generator', function (t) {
 
             app.run({}, function () {
                 expected.forEach(function (file) {
-                    t.ok(fs.existsSync(file), 'file exists.');
+                    t.ok(fs.existsSync(path.join(testDir, file)), 'file exists.');
                 });
                 t.end();
             });
