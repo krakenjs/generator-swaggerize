@@ -79,7 +79,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
             self = this;
 
-            this.appname = props.appname;
+            this.appname = props.appname || this.appname;
             this.creatorName = props.creatorName;
             this.githubUser = props.githubUser;
             this.email = props.email;
