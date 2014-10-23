@@ -27,3 +27,11 @@ Create a project:
 ```
 $ yo swaggerize
 ```
+
+### Re-running handlers, test, and models generator
+
+In an existing project, you can run the generator with the `--only` option. This option supports a comma delimited string of types to generate.
+
+```
+$ yo swaggerize --only=handlers,models,tests
+```
