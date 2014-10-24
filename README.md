@@ -8,6 +8,10 @@ Generates projects for:
 - Express
 - Hapi
 
+See also:
+- [swaggerize-express](https://github.com/krakenjs/swaggerize-express)
+- [swaggerize-hapi](https://github.com/krakenjs/swaggerize-hapi)
+
 ### Usage
 
 Install yeoman's `yo` if you haven't already:
