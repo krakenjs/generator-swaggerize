@@ -54,7 +54,7 @@ test('api', function (t) {
             '<%=k%>': <%=JSON.stringify(body[k])%><%if (i < Object.keys(body).filter(function (k) { return !!body[k]; }).length - 1) {%>, <%}%><%})%>
         };
         <%} if (responseSchema) {%>
-        var responseSchema = Enjoi({<%_.forEach(Object.keys(responseSchema), function (k, i) {%>
+        var responseSchema = enjoi({<%_.forEach(Object.keys(responseSchema), function (k, i) {%>
             '<%=k%>': <%=JSON.stringify(responseSchema[k])%><%if (i < Object.keys(responseSchema).length - 1) {%>, <%}%><%})%>
         }, {
             '#': require('<%=apiPath%>')
