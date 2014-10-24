@@ -25,7 +25,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
         self = this;
         done = this.async();
-        this.only = this.options['only'];
+        this.only = this.options.only;
 
         if (!this.only || this.only === true) {
             this.only = [];
