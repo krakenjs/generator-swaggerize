@@ -3,6 +3,7 @@
 var Test = require('tape'),
     Path = require('path'),
     Hapi = require('hapi'),
+    Enjoi = require('enjoi'),
     Swaggerize = require('swaggerize-hapi');
 
 Test('api', function (t) {
@@ -29,6 +30,9 @@ Test('api', function (t) {
         <%
         var path = operation.path;
         var body;
+        var responseCode = operation.responses && Object.keys(operation.responses)[0];
+        var response = responseCode && operation.responses[responseCode];
+        var responseSchema = response && response.schema;
         if (operation.parameters && operation.parameters.length) {
             _.forEach(operation.parameters, function (param) {
                 if (param.in === 'path') {
@@ -51,11 +55,17 @@ Test('api', function (t) {
                     body = models[param.schema.$ref.slice(param.schema.$ref.lastIndexOf('/') + 1)];
                 }
             });
-        }%>t.plan(1);
-        <%if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put'){%>
+        }
+        if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put') {%>
         var body = {<%_.forEach(Object.keys(body).filter(function (k) { return !!body[k]; }), function (k, i) {%>
             '<%=k%>': <%=JSON.stringify(body[k])%><%if (i < Object.keys(body).filter(function (k) { return !!body[k]; }).length - 1) {%>, <%}%><%})%>
         };
+        <%} if (responseSchema) {%>
+        var responseSchema = Enjoi({<%_.forEach(Object.keys(responseSchema), function (k, i) {%>
+            '<%=k%>': <%=JSON.stringify(responseSchema[k])%><%if (i < Object.keys(responseSchema).length - 1) {%>, <%}%><%})%>
+        }, {
+            '#': require('<%=apiPath%>')
+        });
         <%}%>
         var options = {
             method: '<%=operation.method.toLowerCase()%>',
@@ -65,7 +75,11 @@ Test('api', function (t) {
         options.payload = body;
         <%}%>
         server.inject(options, function (res) {
-            t.strictEqual(res.statusCode, 200, '<%=operation.method.toLowerCase()%> <%=operation.path%> 200 status.');
+            t.strictEqual(res.statusCode, <%=responseCode%>, '<%=operation.method.toLowerCase()%> <%=operation.path%> <%=responseCode%> status.');<%if (responseSchema) {%>
+            responseSchema.validate(res.body, function (error) {
+                t.ok(!error, 'Response schema valid.');
+            });<%}%>
+            t.end();
         });
     });
     <%});%>
