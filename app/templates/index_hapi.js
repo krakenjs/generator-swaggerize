@@ -8,7 +8,7 @@ var server = new Hapi.Server(8000);
 server.pack.register({
     plugin: Swaggerize,
     options: {
-        api: require('./config/pets.json'),
+        api: require('./<%=apiPath%>'),
         handlers: './handlers'
     }
 }, function (error) {

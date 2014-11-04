@@ -16,7 +16,7 @@ app.get('/api', function (req, res) {
 });
 
 app.use(swaggerize({
-    api: require('./config/pets.json'),
+    api: require('<%=apiPath%>'),
     handlers: './handlers'
 }));
 

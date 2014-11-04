@@ -149,8 +149,10 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             this.copy('jshintrc', '.jshintrc');
             this.copy('gitignore', '.gitignore');
             this.copy('npmignore', '.npmignore');
-            this.copy('index_' + this.framework + '.js', 'index.js');
 
+            this.template('index_' + this.framework + '.js', 'index.js', {
+                apiPath: path.relative(this.appRoot, path.join(this.appRoot, 'config/' + path.basename(this.apiPath)))
+            });
             this.template('_package.json', 'package.json');
             this.template('_README.md', 'README.md');
         }
