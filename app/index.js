@@ -26,6 +26,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         self = this;
         done = this.async();
         this.only = this.options.only;
+        this.appname = path.basename(process.cwd());
 
         if (!this.only || this.only === true) {
             this.only = [];
