@@ -307,7 +307,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                             break;
                     }
 
-                    if (!!~modelSchema.required.indexOf(prop)) {
+                    if (modelSchema.required && !!~modelSchema.required.indexOf(prop)) {
                         options[prop] = defaultValue;
                     }
                 });
