@@ -65,7 +65,8 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             },
             {
                 name: 'apiPath',
-                message: 'Path (or URL) to swagger document:'
+                message: 'Path (or URL) to swagger document:',
+                required: true
             },
             {
                 name: 'framework',
