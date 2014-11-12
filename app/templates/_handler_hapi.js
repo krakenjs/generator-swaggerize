@@ -11,7 +11,7 @@ module.exports = {
      * produces: <%=method.produces && method.produces.join(', ')%>
      */
     <%=method.method%>: function <%=method.name%>(req, reply) {
-        reply().code(500);
+        reply().code(501);
     }<%if (i < methods.length - 1) {%>, <%}%>
     <%})%>
 };
