@@ -76,7 +76,7 @@ Test('api', function (t) {
         <%}%>
         server.inject(options, function (res) {
             t.strictEqual(res.statusCode, <%=responseCode%>, '<%=operation.method.toLowerCase()%> <%=operation.path%> <%=responseCode%> status.');<%if (responseSchema) {%>
-            responseSchema.validate(res.body, function (error) {
+            responseSchema.validate(res.payload, function (error) {
                 t.ok(!error, 'Response schema valid.');
             });<%}%>
             t.end();
