@@ -39,3 +39,8 @@ In an existing project, you can run the generator with the `--only` option. This
 ```
 $ yo swaggerize --only=handlers,models,tests
 ```
+
+### Other CLI Options
+
+- `--framework` - specify the framework (`hapi` or `express`).
+- `--apiPath` - specify the path to the swagger document.

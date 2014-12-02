@@ -17,7 +17,7 @@ Test('api', function (t) {
         server.pack.register({
             plugin: Swaggerize,
             options: {
-                api: require('<%=apiPath%>'),
+                api: require('./<%=apiPath%>'),
                 handlers: Path.join(__dirname, '<%=handlers%>')
             }
         }, function (err) {
