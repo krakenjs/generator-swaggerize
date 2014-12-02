@@ -14,7 +14,7 @@ test('api', function (t) {
     app.use(require('body-parser')());<%}});%>
 
     app.use(swaggerize({
-        api: require('<%=apiPath%>'),
+        api: require('./<%=apiPath%>'),
         handlers: path.join(__dirname, '<%=handlers%>')
     }));
 

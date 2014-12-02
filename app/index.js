@@ -21,11 +21,13 @@ var ModuleGenerator = yeoman.generators.Base.extend({
     },
 
     askFor: function () {
-        var self, done;
+        var self, done, pkg;
 
         self = this;
         done = this.async();
         this.only = this.options.only;
+        this.framework = this.options.framework;
+        this.apiPath = this.options.apiPath && path.resolve(this.options.apiPath);
         this.appname = path.basename(process.cwd());
 
         if (!this.only || this.only === true) {
@@ -33,6 +35,15 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         }
         else {
             this.only = this.only.split(',');
+        }
+
+        if (this.only.length > 0) {
+            if (fs.existsSync(path.resolve('package.json'))) {
+                pkg = yeoman.file.readJSON(path.resolve('package.json'));
+                if (pkg.dependencies.hapi) {
+                    this.framework = 'hapi';
+                }
+            }
         }
 
         function all() {
@@ -66,18 +77,18 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             {
                 name: 'apiPath',
                 message: 'Path (or URL) to swagger document:',
-                required: true
+                required: true,
+                default: this.apiPath
             },
             {
                 name: 'framework',
                 message: 'Express or Hapi:',
-                default: 'express',
-                when: all
+                default: this.framework || 'express',
             }
         ];
 
         this.prompt(prompts, function (props) {
-            var self, pkg;
+            var self;
 
             self = this;
 
@@ -85,18 +96,8 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             this.creatorName = props.creatorName;
             this.githubUser = props.githubUser;
             this.email = props.email;
-            this.framework = props.framework || 'express';
+            this.framework = props.framework && props.framework.toLowerCase() || 'express';
             this.appRoot = path.basename(process.cwd()) === this.appname ? this.destinationRoot() : path.join(this.destinationRoot(), this.appname);
-
-            if (this.only.length > 0) {
-                if (fs.existsSync(path.join(this.appRoot, 'package.json'))) {
-                    pkg = yeoman.file.readJSON(path.join(this.appRoot, 'package.json'));
-
-                    if (pkg.dependencies.hapi) {
-                        this.framework = 'hapi';
-                    }
-                }
-            }
 
             if (this.framework !== 'express' && this.framework !== 'hapi') {
                 done(new Error('Unrecognized framework: ' + this.framework));
