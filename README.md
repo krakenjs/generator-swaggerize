@@ -1,6 +1,11 @@
-[![Build Status](https://travis-ci.org/krakenjs/generator-swaggerize.png)](https://travis-ci.org/krakenjs/generator-swaggerize) [![NPM version](https://badge.fury.io/js/generator-swaggerize.png)](http://badge.fury.io/js/generator-swaggerize)
+generator-swaggerize
+====================
 
-# generator-swaggerize
+Lead Maintainer: [Trevor Livingston](https://github.com/tlivings/)  
+
+[![Build Status](https://travis-ci.org/krakenjs/generator-swaggerize.svg?branch=master)](https://travis-ci.org/krakenjs/generator-swaggerize)  
+[![NPM version](https://badge.fury.io/js/generator-swaggerize.png)](http://badge.fury.io/js/generator-swaggerize)  
+
 
 Yeoman generator for swagger application with krakenjs/swaggerize tools.
 
