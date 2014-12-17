@@ -3,10 +3,14 @@
 var Hapi = require('hapi'),
     Swaggerize = require('swaggerize-hapi');
 
-var server = new Hapi.Server(8000);
+var server = new Hapi.Server();
 
-server.pack.register({
-    plugin: Swaggerize,
+server.connection({
+    port: 8000
+});
+
+server.register({
+    register: Swaggerize,
     options: {
         api: require('./<%=apiPath%>'),
         handlers: './handlers'
