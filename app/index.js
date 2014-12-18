@@ -7,7 +7,8 @@ var util = require('util'),
     apischema = require('swaggerize-builder/lib/schema/swagger-spec/schemas/v2.0/schema.json'),
     builderUtils = require('swaggerize-builder/lib/utils'),
     wreck = require('wreck'),
-    enjoi = require('enjoi');
+    enjoi = require('enjoi'),
+    update = require('./update');
 
 var ModuleGenerator = yeoman.generators.Base.extend({
     init: function () {
@@ -235,6 +236,11 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             pathnames = route.pathname.split('/');
 
             file = path.join(self.appRoot, 'handlers/' + pathnames.join('/') + '.js');
+
+            if (fs.existsSync(file)) {
+                fs.writeFileSync(file, update.handlers(file, self.framework, route));
+                return;
+            }
 
             self.template('_handler_' + self.framework + '.js', file, route);
         });
