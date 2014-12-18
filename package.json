@@ -33,8 +33,6 @@
   },
   "dependencies": {
     "enjoi": "^0.1.16",
-    "escodegen": "^1.4.1",
-    "esprima": "^1.2.2",
     "swaggerize-builder": "^2.0.0",
     "swaggerize-express": "^3.0.0",
     "swaggerize-hapi": "^1.0.0-",
