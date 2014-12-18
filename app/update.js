@@ -29,7 +29,7 @@ module.exports = {
                       '     * produces: %s\n' +
                       '     */\n';
 
-            strfn = util.format(strfn, method.description, method.parameters.map(function (p) { return p.name }).join(', '), method.produces && method.produces.join(', '));
+            strfn = util.format(strfn, method.description, method.parameters.map(function (p) { return p.name; }).join(', '), method.produces && method.produces.join(', '));
 
             if (framework === 'hapi') {
                 strfn += 'function ' + method.name + '(req, reply) {\n    reply().code(501);\n}';
@@ -52,7 +52,7 @@ module.exports = {
 
                     assert.strictEqual(assigned.type, 'ObjectExpression');
 
-                    newast.comments[0].range[1] = newast.comments[0].range[1] - newast.comments[0].range[0]
+                    newast.comments[0].range[1] = newast.comments[0].range[1] - newast.comments[0].range[0];
                     newast.comments[0].range[0] = assigned.properties[assigned.properties.length - 1].range[1] + 1;
                     newast.comments[0].range[1] = newast.comments[0].range[0] + newast.comments[0].range[1];
 
