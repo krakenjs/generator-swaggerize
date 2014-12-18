@@ -14,8 +14,10 @@ Test('api', function (t) {
 
         server = new Hapi.Server();
 
-        server.pack.register({
-            plugin: Swaggerize,
+        server.connection({});
+
+        server.register({
+            register: Swaggerize,
             options: {
                 api: require('./<%=apiPath%>'),
                 handlers: Path.join(__dirname, '<%=handlers%>')
