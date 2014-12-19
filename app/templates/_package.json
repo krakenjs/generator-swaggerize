@@ -39,5 +39,5 @@
         "cover" : "istanbul cover tape -- tests/*.js",
         "lint" : "jshint -c .jshintrc index.js handlers models"
     },
-    "main" : "./index"
+    "main" : "./server"
 }

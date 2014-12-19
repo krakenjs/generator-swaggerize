@@ -4,6 +4,7 @@ var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser');
 var swaggerize = require('swaggerize-express');
+var path = require('path');
 
 var app = express();
 
@@ -17,7 +18,7 @@ app.get('/api', function (req, res) {
 
 app.use(swaggerize({
     api: require('./<%=apiPath%>'),
-    handlers: './handlers'
+    handlers: path.resolve('./handlers')
 }));
 
 server.listen(8000, function () {

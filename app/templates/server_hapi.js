@@ -1,7 +1,8 @@
 'use strict';
 
-var Hapi = require('hapi'),
-    Swaggerize = require('swaggerize-hapi');
+var Hapi = require('hapi');
+var Swaggerize = require('swaggerize-hapi');
+var Path = require('path');
 
 var server = new Hapi.Server();
 
@@ -13,7 +14,7 @@ server.register({
     register: Swaggerize,
     options: {
         api: require('./<%=apiPath%>'),
-        handlers: './handlers'
+        handlers: Path.resolve('./handlers')
     }
 }, function (error) {
     server.start(function () {
