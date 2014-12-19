@@ -20,7 +20,7 @@
         "body-parser": "^1.9.0",
         "swaggerize-express": "^3.0.0"<%}%><% if (framework === 'hapi') {%>
         "hapi": "^8.0.0",
-        "swaggerize-hapi": "^^1.0.0-"<%}%>
+        "swaggerize-hapi": "^1.0.0-"<%}%>
     },
     "devDependencies": {
         "tape": "^3.0.0",
@@ -39,5 +39,5 @@
         "cover" : "istanbul cover tape -- tests/*.js",
         "lint" : "jshint -c .jshintrc index.js handlers models"
     },
-    "main" : "./index"
+    "main" : "./server"
 }
