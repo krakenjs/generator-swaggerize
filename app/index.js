@@ -118,6 +118,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                         done(new Error('404: ' + props.apiPath));
                         return;
                     }
+                    self.rawApi = body;
                     self.apiPath = path.join(self.appRoot, 'config/' + fp[fp.length - 1]);
                     self.api = loadApi(self.apiPath, body);
                     done();
@@ -170,10 +171,9 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         //Url
         else {
             if (!fs.existsSync(this.apiPath)) {
-                this.write(this.apiPath, JSON.stringify(this.api, null, 2));
+                this.write(this.apiPath, this.rawApi);
             }
         }
-
     },
 
     handlers: function () {
@@ -367,7 +367,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 });
 
 function loadApi(apiPath, content) {
-    if (apiPath.indexOf('.yaml') === apiPath.length - 5) {
+    if (apiPath.indexOf('.yaml') === apiPath.length - 5 || apiPath.indexOf('.yml') === apiPath.length - 4) {
         return jsYaml.load(content || fs.readFileSync(apiPath));
     }
     return content ? JSON.parse(content) : yeoman.file.readJSON(apiPath);
