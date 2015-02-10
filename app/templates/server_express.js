@@ -17,7 +17,7 @@ app.get('/api', function (req, res) {
 });
 
 app.use(swaggerize({
-    api: require('./<%=apiPath%>'),
+    api: path.resolve('./<%=apiPath%>'),
     handlers: path.resolve('./handlers')
 }));
 
