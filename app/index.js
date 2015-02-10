@@ -4,6 +4,7 @@ var util = require('util'),
     path = require('path'),
 	fs = require('fs'),
     yeoman = require('yeoman-generator'),
+    jsYaml = require('js-yaml'),
     apischema = require('swaggerize-builder/lib/schema/swagger-spec/schemas/v2.0/schema.json'),
     builderUtils = require('swaggerize-builder/lib/utils'),
     wreck = require('wreck'),
@@ -118,7 +119,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                         return;
                     }
                     self.apiPath = path.join(self.appRoot, 'config/' + fp[fp.length - 1]);
-                    self.api = JSON.parse(body);
+                    self.api = jsYaml.load(body);
                     done();
                 });
             }
