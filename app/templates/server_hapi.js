@@ -13,7 +13,7 @@ server.connection({
 server.register({
     register: Swaggerize,
     options: {
-        api: require('./<%=apiPath%>'),
+        api: Path.resolve('./<%=apiPath%>'),
         handlers: Path.resolve('./handlers')
     }
 }, function (error) {

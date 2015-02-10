@@ -4,6 +4,7 @@ var util = require('util'),
     path = require('path'),
 	fs = require('fs'),
     yeoman = require('yeoman-generator'),
+    jsYaml = require('js-yaml'),
     apischema = require('swaggerize-builder/lib/schema/swagger-spec/schemas/v2.0/schema.json'),
     builderUtils = require('swaggerize-builder/lib/utils'),
     wreck = require('wreck'),
@@ -117,13 +118,15 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                         done(new Error('404: ' + props.apiPath));
                         return;
                     }
+                    self.rawApi = body;
                     self.apiPath = path.join(self.appRoot, 'config/' + fp[fp.length - 1]);
-                    self.api = JSON.parse(body);
+                    self.api = loadApi(self.apiPath, body);
                     done();
                 });
             }
             else {
                 this.apiPath = path.resolve(props.apiPath);
+                this.api = loadApi(this.apiPath);
                 done();
             }
         }.bind(this));
@@ -168,10 +171,9 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         //Url
         else {
             if (!fs.existsSync(this.apiPath)) {
-                this.write(this.apiPath, JSON.stringify(this.api, null, 2));
+                this.write(this.apiPath, this.rawApi);
             }
         }
-
     },
 
     handlers: function () {
@@ -363,5 +365,12 @@ var ModuleGenerator = yeoman.generators.Base.extend({
     }
 
 });
+
+function loadApi(apiPath, content) {
+    if (apiPath.indexOf('.yaml') === apiPath.length - 5 || apiPath.indexOf('.yml') === apiPath.length - 4) {
+        return jsYaml.load(content || fs.readFileSync(apiPath));
+    }
+    return content ? JSON.parse(content) : yeoman.file.readJSON(apiPath);
+}
 
 module.exports = ModuleGenerator;
