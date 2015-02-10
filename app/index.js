@@ -119,12 +119,13 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                         return;
                     }
                     self.apiPath = path.join(self.appRoot, 'config/' + fp[fp.length - 1]);
-                    self.api = jsYaml.load(body);
+                    self.api = loadApi(self.apiPath, body);
                     done();
                 });
             }
             else {
                 this.apiPath = path.resolve(props.apiPath);
+                this.api = loadApi(this.apiPath);
                 done();
             }
         }.bind(this));
@@ -364,5 +365,12 @@ var ModuleGenerator = yeoman.generators.Base.extend({
     }
 
 });
+
+function loadApi(apiPath, content) {
+    if (apiPath.indexOf('.yaml') === apiPath.length - 5) {
+        return jsYaml.load(content || fs.readFileSync(apiPath));
+    }
+    return content ? JSON.parse(content) : yeoman.file.readJSON(apiPath);
+}
 
 module.exports = ModuleGenerator;
