@@ -20,13 +20,16 @@
         "body-parser": "^1.9.0",
         "swaggerize-express": "^3.0.0"<%}%><% if (framework === 'hapi') {%>
         "hapi": "^8.0.0",
-        "swaggerize-hapi": "^1.0.0-"<%}%>
+        "swaggerize-hapi": "^1.0.0-"<%}%><% if (framework === 'restify') {%>
+        "swaggerize-restify": "bardzusny/swaggerize-restify",
+	"restify": "^2.8.5"<%}%>
     },
     "devDependencies": {
         "tape": "^3.0.0",
         "jshint": "^2.4.1",
         "istanbul": "~0.2.3",
         "enjoi": "~0.1.16"<% if (framework === 'express') {%> ,
+        "supertest": "~0.13.0"<%}%><% if (framework === 'restify') {%> ,
         "supertest": "~0.13.0"<%}%>
     },
     "scripts": {

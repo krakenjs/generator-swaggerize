@@ -36,9 +36,11 @@
     "escodegen": "^1.4.1",
     "esprima": "^1.2.2",
     "js-yaml": "^3.2.6",
+    "restify": "^2.8.5",
     "swaggerize-builder": "^2.0.0",
     "swaggerize-express": "^3.0.0",
     "swaggerize-hapi": "^1.0.0-",
+    "swaggerize-restify": "git://github.com/bardzusny/swaggerize-restify",
     "wreck": "^5.0.1",
     "yeoman-generator": "~0.16.0"
   },
