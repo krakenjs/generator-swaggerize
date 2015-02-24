@@ -13,7 +13,7 @@ var server = http.createServer(app);
 app.use(bodyParser.json());
 
 app.get('/api', function (req, res) {
-    res.send(200);
+    res.sendStatus(200);
 });
 
 app.use(swaggerize({
