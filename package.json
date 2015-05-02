@@ -41,7 +41,7 @@
     "swaggerize-builder": "^2.0.0",
     "swaggerize-express": "^3.0.0",
     "swaggerize-hapi": "^1.0.0-",
-    "swaggerize-restify": "^1.0.0-",
+    "swaggerize-restify": "^2.0.0-",
     "wreck": "^5.0.1",
     "yeoman-generator": "~0.16.0"
   },

@@ -18,5 +18,5 @@ swaggerize(server, {
 });
 
 server.listen(8000, function () {
-    server.setHost(server.address().address + ':' + server.address().port);
+    server.swagger.api.host = server.address().address + ':' + server.address().port;
 });
