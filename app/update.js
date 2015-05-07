@@ -36,7 +36,7 @@ module.exports = {
 
             }
             else if (framework === 'express') {
-                strfn += 'function ' + method.name + '(req, res) {\n    res.send(501);\n}';
+                strfn += 'function ' + method.name + '(req, res) {\n    res.sendStatus(501);\n}';
             }
 
             newast = esprima.parse(strfn, { tokens: true, range: true, comment: true });
