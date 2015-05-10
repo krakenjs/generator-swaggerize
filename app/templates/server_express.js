@@ -12,10 +12,6 @@ var server = http.createServer(app);
 
 app.use(bodyParser.json());
 
-app.get('/api', function (req, res) {
-    res.send(200);
-});
-
 app.use(swaggerize({
     api: path.resolve('./<%=apiPath%>'),
     handlers: path.resolve('./handlers')

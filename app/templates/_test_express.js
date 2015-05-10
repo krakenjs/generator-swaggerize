@@ -61,8 +61,7 @@ test('api', function (t) {
         });
         <%}%>
 
-        request(app).<%=operation.method.toLowerCase()%>('<%=resourcePath%><%=path%>')
-        .expect(200)<%if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put'){%>.send(body)<%}%>
+        request(app).<%=operation.method.toLowerCase()%>('<%=resourcePath%><%=path%>')<%if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put'){%>.send(body)<%}%>
         .end(function (err, res) {
             t.ok(!err, '<%=operation.method.toLowerCase()%> <%=operation.path%> no error.');
             t.strictEqual(res.statusCode, <%=responseCode%>, '<%=operation.method.toLowerCase()%> <%=operation.path%> <%=responseCode%> status.');<%if (responseSchema) {%>

@@ -1,7 +1,7 @@
 {
   "name": "generator-swaggerize",
   "description": "Yeoman generator for swagger application with krakenjs/swaggerize tools.",
-  "version": "1.0.0-rc.8",
+  "version": "1.0.0",
   "author": "Trevor Livingston <tlivings@gmail.com>",
   "keywords": [
     "yeoman",
@@ -30,7 +30,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "engines": {
-    "node": "~0.10.22"
+    "node": "0.10.x"
   },
   "dependencies": {
     "enjoi": "^0.2.0",
