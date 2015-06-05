@@ -35,6 +35,9 @@ module.exports = {
                 strfn += 'function ' + method.name + '(req, reply) {\n    reply().code(501);\n}';
 
             }
+            else if (framework === 'restify') {
+                strfn += 'function ' + method.name + '(req, res) {\n    res.send(501);\n}';
+            }
             else if (framework === 'express') {
                 strfn += 'function ' + method.name + '(req, res) {\n    res.sendStatus(501);\n}';
             }

@@ -84,7 +84,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             },
             {
                 name: 'framework',
-                message: 'Express or Hapi:',
+                message: 'Express, Hapi or Restify:',
                 default: this.framework || 'express',
             }
         ];
@@ -101,7 +101,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             this.framework = props.framework && props.framework.toLowerCase() || 'express';
             this.appRoot = path.basename(process.cwd()) === this.appname ? this.destinationRoot() : path.join(this.destinationRoot(), this.appname);
 
-            if (this.framework !== 'express' && this.framework !== 'hapi') {
+            if (this.framework !== 'express' && this.framework !== 'hapi' && this.framework !== 'restify') {
                 done(new Error('Unrecognized framework: ' + this.framework));
                 return;
             }
