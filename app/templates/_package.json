@@ -21,8 +21,8 @@
         "swaggerize-express": "^3.0.0"<%}%><% if (framework === 'hapi') {%>
         "hapi": "^8.0.0",
         "swaggerize-hapi": "^1.0.0-"<%}%><% if (framework === 'restify') {%>
-        "swaggerize-restify": "^1.0.0",
-	"restify": "^2.8.5"<%}%>
+        "swaggerize-restify": "^2.0.0",
+	"restify": "^3.0.3"<%}%>
     },
     "devDependencies": {
         "tape": "^3.0.0",
