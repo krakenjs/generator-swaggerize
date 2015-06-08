@@ -37,7 +37,7 @@
     "escodegen": "^1.4.1",
     "esprima": "^1.2.2",
     "js-yaml": "^3.2.6",
-    "restify": "^2.8.5",
+    "restify": "^3.0.3",
     "swaggerize-builder": "^2.0.0",
     "swaggerize-express": "^3.0.0",
     "swaggerize-hapi": "^1.0.0-",
