@@ -22,7 +22,7 @@
         "hapi": "^8.0.0",
         "swaggerize-hapi": "^1.0.0-"<%}%><% if (framework === 'restify') {%>
         "swaggerize-restify": "^2.0.0",
-	"restify": "^3.0.3"<%}%>
+        "restify": "^3.0.3"<%}%>
     },
     "devDependencies": {
         "tape": "^3.0.0",
@@ -36,11 +36,6 @@
         "test": "tape test/*.js",
         "cover": "istanbul cover tape -- test/*.js",
         "lint": "jshint -c .jshintrc lib/**/*.js"
-    },
-    "scripts" : {
-        "test" : "tape tests/*.js",
-        "cover" : "istanbul cover tape -- tests/*.js",
-        "lint" : "jshint -c .jshintrc index.js handlers models"
     },
     "main" : "./server"
 }
