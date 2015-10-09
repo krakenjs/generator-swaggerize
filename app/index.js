@@ -243,11 +243,11 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             route = routes[routePath];
             handlername = route.handler;
 
-            if (!handlername.startsWith('handlers')) {
+            if (!~handlername.indexOf('handlers/')) {
                 handlername = 'handlers/' + route.handler;
             }
 
-            if (!handlername.endsWith('.js')) {
+            if (!~handlername.indexOf('.js')) {
                 handlername += '.js';
             }
 
