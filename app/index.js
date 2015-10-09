@@ -190,7 +190,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
         Object.keys(this.api.paths).forEach(function (path) {
             var pathnames, route;
-            var def = self.api.paths[path]
+            var def = self.api.paths[path];
 
             route = {
                 path: path,
@@ -241,14 +241,14 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             var handlername, route, file;
 
             route = routes[routePath];
-            handlername = route.handler
+            handlername = route.handler;
 
             if (!handlername.startsWith('handlers')) {
                 handlername = 'handlers/' + route.handler;
             }
 
             if (!handlername.endsWith('.js')) {
-                handlername += '.js'
+                handlername += '.js';
             }
 
             file = path.join(self.appRoot, handlername);
