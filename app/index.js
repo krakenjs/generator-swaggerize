@@ -157,8 +157,10 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             this.copy('gitignore', '.gitignore');
             this.copy('npmignore', '.npmignore');
 
+            var relativeApiPath = this.apiConfigPath = path.relative(this.appRoot, path.join(this.appRoot, 'config/' + path.basename(this.apiPath)));
+
             this.template('server_' + this.framework + '.js', 'server.js', {
-                apiPath: path.relative(this.appRoot, path.join(this.appRoot, 'config/' + path.basename(this.apiPath)))
+                apiPath: relativeApiPath
             });
             this.template('_package.json', 'package.json');
             this.template('_README.md', 'README.md');
