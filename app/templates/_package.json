@@ -26,6 +26,7 @@
     },
     "devDependencies": {
         "tape": "^3.0.0",
+        "js-yaml": "^3.2.6",
         "jshint": "^2.4.1",
         "istanbul": "~0.2.3",
         "enjoi": "~0.1.16"<% if (framework === 'express') {%> ,
