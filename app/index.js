@@ -2,7 +2,7 @@
 
 var util = require('util'),
     path = require('path'),
-	fs = require('fs'),
+	  fs = require('fs'),
     yeoman = require('yeoman-generator'),
     jsYaml = require('js-yaml'),
     apischema = require('swagger-schema-official/schema'),

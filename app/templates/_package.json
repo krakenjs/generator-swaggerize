@@ -35,7 +35,7 @@
     "scripts": {
         "test": "tape test/*.js",
         "cover": "istanbul cover tape -- test/*.js",
-        "lint": "jshint -c .jshintrc lib/**/*.js"
+        "lint": "jshint -c .jshintrc --exclude ./node_modules ."
     },
     "main" : "./server"
 }
