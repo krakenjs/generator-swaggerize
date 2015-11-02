@@ -33,7 +33,7 @@
         "supertest": "~0.13.0"<%}%>
     },
     "scripts": {
-        "test": "tape test/*.js",
+        "test": "tape tests/*.js",
         "cover": "istanbul cover tape -- test/*.js",
         "lint": "jshint -c .jshintrc lib/**/*.js"
     },
