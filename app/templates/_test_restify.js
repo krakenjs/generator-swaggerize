@@ -4,6 +4,8 @@ var test = require('tape'),
     path = require('path'),
     restify = require('restify'),
     enjoi = require('enjoi'),
+    jsYaml = require('js-yaml'),
+    fs = require('fs'),
     swaggerize = require('swaggerize-restify'),
     request = require('supertest');
 
@@ -14,7 +16,7 @@ test('api', function (t) {
     server.use(restify.bodyParser());<%}});%>
 
     swaggerize(server, {
-        api: require('./<%=apiPath%>'),
+        api: path.join(__dirname, './<%=apiPath%>'),
         handlers: path.join(__dirname, '<%=handlers%>')
     });
 
@@ -57,7 +59,7 @@ test('api', function (t) {
         var responseSchema = enjoi({<%_.forEach(Object.keys(responseSchema), function (k, i) {%>
             '<%=k%>': <%=JSON.stringify(responseSchema[k])%><%if (i < Object.keys(responseSchema).length - 1) {%>, <%}%><%})%>
         }, {
-            '#': require('<%=apiPath%>')
+          '#': <%if (apiPath.indexOf('.yaml') === apiPath.length - 5 || apiPath.indexOf('.yml') === apiPath.length - 4) {%> jsYaml.load(fs.readFileSync(path.join(__dirname, './<%=apiPath%>'))) <% }else{ %> require(path.join(__dirname, './<%=apiPath%>')) <% } %>
         });
         <%}%>
 

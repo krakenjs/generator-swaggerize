@@ -3,6 +3,8 @@
 var Test = require('tape'),
     Path = require('path'),
     Hapi = require('hapi'),
+    jsYaml = require('js-yaml'),
+    fs = require('fs'),
     Enjoi = require('enjoi'),
     Swaggerize = require('swaggerize-hapi');
 
@@ -19,7 +21,7 @@ Test('api', function (t) {
         server.register({
             register: Swaggerize,
             options: {
-                api: require('./<%=apiPath%>'),
+                api: Path.join(__dirname, './<%=apiPath%>'),
                 handlers: Path.join(__dirname, '<%=handlers%>')
             }
         }, function (err) {
@@ -66,7 +68,7 @@ Test('api', function (t) {
         var responseSchema = Enjoi({<%_.forEach(Object.keys(responseSchema), function (k, i) {%>
             '<%=k%>': <%=JSON.stringify(responseSchema[k])%><%if (i < Object.keys(responseSchema).length - 1) {%>, <%}%><%})%>
         }, {
-            '#': require('<%=apiPath%>')
+          '#': <%if (apiPath.indexOf('.yaml') === apiPath.length - 5 || apiPath.indexOf('.yml') === apiPath.length - 4) {%> jsYaml.load(fs.readFileSync(Path.join(__dirname, './<%=apiPath%>'))) <% }else{ %> require(Path.join(__dirname, './<%=apiPath%>')) <% } %>
         });
         <%}%>
         var options = {
