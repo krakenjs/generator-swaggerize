@@ -157,8 +157,10 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             this.copy('gitignore', '.gitignore');
             this.copy('npmignore', '.npmignore');
 
+            var relativeApiPath = this.apiConfigPath = path.relative(this.appRoot, path.join(this.appRoot, 'config/' + path.basename(this.apiPath)));
+
             this.template('server_' + this.framework + '.js', 'server.js', {
-                apiPath: path.relative(this.appRoot, path.join(this.appRoot, 'config/' + path.basename(this.apiPath)))
+                apiPath: relativeApiPath
             });
             this.template('_package.json', 'package.json');
             this.template('_README.md', 'README.md');
@@ -190,11 +192,13 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
         Object.keys(this.api.paths).forEach(function (path) {
             var pathnames, route;
+            var def = self.api.paths[path];
 
             route = {
                 path: path,
                 pathname: undefined,
-                methods: []
+                methods: [],
+                handler: undefined
             };
 
             pathnames = [];
@@ -221,6 +225,10 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                     parameters: operation.parameters || [],
                     produces: operation.produces || []
                 });
+
+                // if handler specified within specification then use that path
+                // else default to the route path.
+                route.handler = operation['x-handler'] || def['x-handler'] || route.pathname;
             });
 
             if (routes[route.pathname]) {
@@ -232,12 +240,20 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         });
 
         Object.keys(routes).forEach(function (routePath) {
-            var pathnames, route, file;
+            var handlername, route, file;
 
             route = routes[routePath];
-            pathnames = route.pathname.split('/');
+            handlername = route.handler;
 
-            file = path.join(self.appRoot, 'handlers/' + pathnames.join('/') + '.js');
+            if (!~handlername.indexOf('handlers/')) {
+                handlername = 'handlers/' + route.handler;
+            }
+
+            if (!~handlername.indexOf('.js')) {
+                handlername += '.js';
+            }
+
+            file = path.join(self.appRoot, handlername);
 
             if (fs.existsSync(file)) {
                 fs.writeFileSync(file, update.handlers(file, self.framework, route));

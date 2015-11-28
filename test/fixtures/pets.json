@@ -103,6 +103,22 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "This is to break tests generation becase it has no body.",
+                "operationId": "updatePet",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "pet response",
+                        "schema": {
+                            "$ref": "#/definitions/Pet"
+                        }
+                    }
+                }
             }
         },
         "/pets/{id}": {

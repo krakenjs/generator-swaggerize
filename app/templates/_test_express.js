@@ -3,6 +3,8 @@
 var test = require('tape'),
     path = require('path'),
     express = require('express'),
+    jsYaml = require('js-yaml'),
+    fs = require('fs'),
     enjoi = require('enjoi'),
     swaggerize = require('swaggerize-express'),
     request = require('supertest');
@@ -14,7 +16,7 @@ test('api', function (t) {
     app.use(require('body-parser')());<%}});%>
 
     app.use(swaggerize({
-        api: require('./<%=apiPath%>'),
+        api: path.join(__dirname, './<%=apiPath%>'),
         handlers: path.join(__dirname, '<%=handlers%>')
     }));
 
@@ -49,7 +51,7 @@ test('api', function (t) {
                 }
             });
         }
-        if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put') {%>
+        if (body && (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put')) {%>
         var body = {<%_.forEach(Object.keys(body).filter(function (k) { return !!body[k]; }), function (k, i) {%>
             '<%=k%>': <%=JSON.stringify(body[k])%><%if (i < Object.keys(body).filter(function (k) { return !!body[k]; }).length - 1) {%>, <%}%><%})%>
         };
@@ -57,11 +59,11 @@ test('api', function (t) {
         var responseSchema = enjoi({<%_.forEach(Object.keys(responseSchema), function (k, i) {%>
             '<%=k%>': <%=JSON.stringify(responseSchema[k])%><%if (i < Object.keys(responseSchema).length - 1) {%>, <%}%><%})%>
         }, {
-            '#': require('<%=apiPath%>')
+          '#': <%if (apiPath.indexOf('.yaml') === apiPath.length - 5 || apiPath.indexOf('.yml') === apiPath.length - 4) {%> jsYaml.load(fs.readFileSync(path.join(__dirname, './<%=apiPath%>'))) <% }else{ %> require(Path.join(__dirname, './<%=apiPath%>')) <% } %>
         });
         <%}%>
 
-        request(app).<%=operation.method.toLowerCase()%>('<%=resourcePath%><%=path%>')<%if (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put'){%>.send(body)<%}%>
+        request(app).<%=operation.method.toLowerCase()%>('<%=resourcePath%><%=path%>')<%if (body && (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put')){%>.send(body)<%}%>
         .end(function (err, res) {
             t.ok(!err, '<%=operation.method.toLowerCase()%> <%=operation.path%> no error.');
             t.strictEqual(res.statusCode, <%=responseCode%>, '<%=operation.method.toLowerCase()%> <%=operation.path%> <%=responseCode%> status.');<%if (responseSchema) {%>
