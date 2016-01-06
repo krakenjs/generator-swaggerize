@@ -55,5 +55,6 @@
     "cover": "istanbul cover tape -- test/*.js",
     "lint": "jshint -c .jshintrc app/*.js"
   },
-  "main": "./lib/index"
+  "main": "./lib/index",
+  "license": "Apache-2.0"
 }
