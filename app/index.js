@@ -302,7 +302,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         models = {};
 
         apiPath = (path.relative(path.join(self.appRoot, 'tests'), path.join(self.appRoot, 'config/' + path.basename(this.apiPath)))).replace(/\\/g,'/');
-        modelsPath = (path.join(self.appRoot, 'models')).replace(/\\/g,'/');;
+        modelsPath = (path.join(self.appRoot, 'models')).replace(/\\/g,'/');
         handlersPath = (path.relative(path.join(self.appRoot, 'tests'), path.join(self.appRoot, 'handlers'))).replace(/\\/g,'/');
 
         if (api.definitions && modelsPath) {
