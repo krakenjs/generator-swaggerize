@@ -2,7 +2,7 @@
 
 var util = require('util'),
     path = require('path'),
-      fs = require('fs'),
+    fs = require('fs'),
     yeoman = require('yeoman-generator'),
     jsYaml = require('js-yaml'),
     apischema = require('swagger-schema-official/schema'),
@@ -301,9 +301,9 @@ var ModuleGenerator = yeoman.generators.Base.extend({
         api = this.api;
         models = {};
 
-        apiPath = (path.relative(path.join(self.appRoot, 'tests'), path.join(self.appRoot, 'config/' + path.basename(this.apiPath)))).replace(/\\/g,'/');;
+        apiPath = (path.relative(path.join(self.appRoot, 'tests'), path.join(self.appRoot, 'config/' + path.basename(this.apiPath)))).replace(/\\/g,'/');
         modelsPath = (path.join(self.appRoot, 'models')).replace(/\\/g,'/');;
-        handlersPath = (path.relative(path.join(self.appRoot, 'tests'), path.join(self.appRoot, 'handlers'))).replace(/\\/g,'/');;
+        handlersPath = (path.relative(path.join(self.appRoot, 'tests'), path.join(self.appRoot, 'handlers'))).replace(/\\/g,'/');
 
         if (api.definitions && modelsPath) {
 
