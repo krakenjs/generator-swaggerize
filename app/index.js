@@ -217,12 +217,28 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                 if (!operation) {
                     return;
                 }
+                var parameters = [];
+                operation.parameters.forEach(function(parameter){
+                  //if it's a reference, it'll be a single object with the $ref property, fetch that from the self.api.parameters by name
+                  if(parameter['$ref']){
+                    //fetch from self.api.parameter by name
+                    var parameterName = parameter['$ref'].split('/')[2];
+                    if(self.api.parameters[parameterName]){
+                      //does param exist in parameters?
+                      parameters.push(self.api.parameters[parameterName]);
+                    }
+                    //if the reference name does not exist in the parameters object of the swagger api doc, then it's malformed and I don't know what to say.
+
+                  } else {
+                    parameters.push(parameter); //otherwise it's a normal parameter - just push it into the array
+                  }
+                })
 
                 route.methods.push({
                     method: verb,
                     name: operation.operationId || '',
                     description: operation.description || '',
-                    parameters: operation.parameters || [],
+                    parameters: parameters || [],
                     produces: operation.produces || []
                 });
 
