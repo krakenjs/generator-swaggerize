@@ -1,7 +1,7 @@
 {
   "name": "generator-swaggerize",
-  "description": "Yeoman generator for OADF/swaggerize application with krakenjs/oadf(swaggerize) tools.",
-  "version": "2.1.0",
+  "description": "Yeoman generator for swagger application with krakenjs/swaggerize tools.",
+  "version": "2.0.1",
   "author": "Trevor Livingston <tlivings@gmail.com>",
   "contributors": [
     "Trevor Livingston <tlivings@gmail.com>",
