@@ -51,7 +51,7 @@
     "swaggerize-hapi": "^1.0.0-",
     "swaggerize-restify": "^2.0.0-",
     "swaggerize-routes": "^1.0.0",
-    "wreck": "^7.0.0",
+    "wreck": "^6.0.0",
     "yeoman-generator": "~0.16.0"
   },
   "devDependencies": {
