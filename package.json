@@ -33,7 +33,7 @@
     "node": "0.10.x"
   },
   "dependencies": {
-    "enjoi": "^0.2.0",
+    "enjoi": "^1.0.0",
     "escodegen": "^1.4.1",
     "esprima": "^1.2.2",
     "js-yaml": "^3.2.6",
