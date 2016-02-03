@@ -46,7 +46,7 @@ test('api', function (t) {
                         }
                     });
                 }
-                if (param.in === 'body') {
+                if (param.in === 'body' && param.schema && param.schema.$ref) {
                     body = models[param.schema.$ref.slice(param.schema.$ref.lastIndexOf('/') + 1)];
                 }
             });
