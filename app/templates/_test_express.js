@@ -25,6 +25,7 @@ test('api', function (t) {
         <%
         var path = operation.path;
         var body;
+        var ref;
         var responseCode = operation.responses && Object.keys(operation.responses)[0];
         var response = responseCode && operation.responses[responseCode];
         var responseSchema = response && response.schema;
@@ -46,8 +47,15 @@ test('api', function (t) {
                         }
                     });
                 }
-                if (param.in === 'body' && param.schema && param.schema.$ref) {
-                    body = models[param.schema.$ref.slice(param.schema.$ref.lastIndexOf('/') + 1)];
+                if (param.in === 'body' && param.schema) {
+                    ref = param.schema.$ref;
+                    //Get the $ref from the items for array definitions
+                    if (param.schema.type === 'array' && param.schema.items) {
+                        ref = param.schema.items.$ref;
+                    }
+                    if (ref) {
+                        body = models[ref.slice(ref.lastIndexOf('/') + 1)];
+                    }
                 }
             });
         }
