@@ -66,7 +66,8 @@ test('api', function (t) {
         request(app).<%=operation.method.toLowerCase()%>('<%=resourcePath%><%=path%>')<%if (body && (operation.method.toLowerCase() === 'post' || operation.method.toLowerCase() === 'put')){%>.send(body)<%}%>
         .end(function (err, res) {
             t.ok(!err, '<%=operation.method.toLowerCase()%> <%=operation.path%> no error.');
-            t.strictEqual(res.statusCode, <%=responseCode%>, '<%=operation.method.toLowerCase()%> <%=operation.path%> <%=responseCode%> status.');<%if (responseSchema) {%>
+            <%if (res.statusCode === 'default') {%>t.ok(res.statusCode, '<%=operation.method.toLowerCase()%> <%=operation.path%> <%=responseCode%> status.');<%} else {%>
+            t.strictEqual(res.statusCode, <%=responseCode%>, '<%=operation.method.toLowerCase()%> <%=operation.path%> <%=responseCode%> status.');<%}%><%if (responseSchema) {%>
             responseSchema.validate(res.body, function (error) {
                 t.ok(!error, 'Response schema valid.');
             });<%}%>
