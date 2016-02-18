@@ -29,7 +29,7 @@
         "js-yaml": "^3.2.6",
         "jshint": "^2.4.1",
         "istanbul": "~0.2.3",
-        "enjoi": "~0.1.16"<% if (framework === 'express') {%> ,
+        "enjoi": "^1.0.2"<% if (framework === 'express') {%> ,
         "supertest": "~0.13.0"<%}%><% if (framework === 'restify') {%> ,
         "supertest": "~0.13.0"<%}%>
     },
