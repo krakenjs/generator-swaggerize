@@ -283,6 +283,11 @@ var ModuleGenerator = yeoman.generators.Base.extend({
             if (!model.id) {
                 model.id = modelName;
             }
+            //For Array of items/models referenced as part of definitions, no need
+            //generate a model file.
+            if (model.type === 'array' && model.items) {
+                return;
+            }
 
             self.template('_model.js', path.join(self.appRoot, 'models/' + fileName), model);
         });
@@ -312,6 +317,11 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
                 options = {};
                 modelSchema = api.definitions[key];
+                //For Array of items/models referenced as part of definitions, no need
+                //generate a model file.
+                if (modelSchema.type === 'array' && modelSchema.items) {
+                    return;
+                }
                 ModelCtor = require(path.join(self.appRoot, 'models/' + key.toLowerCase() + '.js'));
 
                 Object.keys(modelSchema.properties).forEach(function (prop) {
