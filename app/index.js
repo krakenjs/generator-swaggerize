@@ -9,7 +9,8 @@ var util = require('util'),
     builderUtils = require('swaggerize-routes/lib/utils'),
     wreck = require('wreck'),
     enjoi = require('enjoi'),
-    update = require('./update');
+    update = require('./update'),
+    SwaggerParser = require('swagger-parser');
 
 var ModuleGenerator = yeoman.generators.Base.extend({
     init: function () {
@@ -120,14 +121,24 @@ var ModuleGenerator = yeoman.generators.Base.extend({
                     }
                     self.rawApi = body;
                     self.apiPath = path.join(self.appRoot, 'config/' + fp[fp.length - 1]);
-                    self.api = loadApi(self.apiPath, body);
-                    done();
+                    loadApi(props.apiPath, body)
+                      .then(function(api) {
+                        self.api = api;
+                        done();
+                      })
+                      .then(null, done);
                 });
             }
             else {
                 this.apiPath = path.resolve(props.apiPath);
-                this.api = loadApi(this.apiPath);
-                done();
+                loadApi(self.apiPath)
+                  .then(function(api) {
+                    self.api = api;
+                    done();
+                  })
+                  .then(null, function(reason) {
+                    done(reason);
+                  });
             }
         }.bind(this));
     },
@@ -280,6 +291,10 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
             model = self.api.definitions[modelName];
 
+            if(model.type === 'array') {
+              model = model.items;
+            }
+
             if (!model.id) {
                 model.id = modelName;
             }
@@ -312,6 +327,9 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 
                 options = {};
                 modelSchema = api.definitions[key];
+                if(modelSchema.type === 'array') {
+                  modelSchema = modelSchema.items;
+                }
                 ModelCtor = require(path.join(self.appRoot, 'models/' + key.toLowerCase() + '.js'));
 
                 Object.keys(modelSchema.properties).forEach(function (prop) {
@@ -383,10 +401,7 @@ var ModuleGenerator = yeoman.generators.Base.extend({
 });
 
 function loadApi(apiPath, content) {
-    if (apiPath.indexOf('.yaml') === apiPath.length - 5 || apiPath.indexOf('.yml') === apiPath.length - 4) {
-        return jsYaml.load(content || fs.readFileSync(apiPath));
-    }
-    return content ? JSON.parse(content) : yeoman.file.readJSON(apiPath);
+  return SwaggerParser.dereference(apiPath);
 }
 
 module.exports = ModuleGenerator;

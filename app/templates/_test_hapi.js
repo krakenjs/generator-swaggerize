@@ -56,7 +56,7 @@ Test('api', function (t) {
                     });
                 }
                 if (param.in === 'body') {
-                    body = models[param.schema.$ref.slice(param.schema.$ref.lastIndexOf('/') + 1)];
+                    body = param.schema;
                 }
             });
         }
