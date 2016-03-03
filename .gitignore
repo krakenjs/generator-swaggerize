@@ -22,7 +22,7 @@ npm-debug.log
 .project
 .idea
 .settings
-.iml
+*.iml
 *.sublime-workspace
 *.sublime-project
 
