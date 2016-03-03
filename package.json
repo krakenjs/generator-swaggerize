@@ -42,7 +42,6 @@
   "dependencies": {
     "enjoi": "^1.0.1",
     "escodegen": "^1.4.1",
-    "esformatter": "^0.9.2",
     "esprima": "^2.7.0",
     "express": "^4.13.3",
     "js-yaml": "^3.2.6",
