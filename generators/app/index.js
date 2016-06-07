@@ -74,58 +74,57 @@ module.exports = Generators.Base.extend({
             done();
         });
     },
-    _validate: function (propName) {
-        return !!propName;
-    },
-    _promptThis: function (propName) {
-        return this.only.length === 0 || !this[propName];
-    },
     prompting: function () {
         var done = this.async();
         var self = this;
-        var when = function (propName) {
-            return self._promptThis.bind(self, propName);
+        var validate = function (propName) {
+            return !!propName;
+        }
+        var when = function () {
+            return self.only.length === 0;
         };
 
         this.prompt([{
             name: 'appName',
             message: 'What would you like to call this project:',
             default: this.appName, // Default to current folder name
-            when: when('appName'),
-            validate: this._validate
+            when: when,
+            validate: validate
         },
         {
             name: 'creatorName',
             message: 'Your name:',
-            when: when('creatorName'),
-            validate: this._validate
+            when: when,
+            validate: validate
         },
         {
             name: 'githubUser',
             message: 'Your github user name:',
-            when: when('githubUser'),
-            validate: this._validate
+            when: when,
+            validate: validate
         },
         {
             name: 'email',
             message: 'Your email:',
-            when: when('email'),
-            validate: this._validate
+            when: when,
+            validate: validate
         },
         //Following are required props
         {
             name: 'apiPath',
             message: 'Path (or URL) to swagger document:',
             required: true,
-            when: when('apiPath'),
+            when: function () {
+                return !this.apiPath;
+            },
             default: this.apiPath,
-            validate: this._validate
+            validate: validate
         },
         {
             type: 'list',
             name: 'framework',
             message: 'Framework:',
-            when: when('framework'),
+            when: when,
             default: this.framework,
             choices: Frameworks.map(function (framework) {
                 return {
@@ -140,8 +139,8 @@ module.exports = Generators.Base.extend({
                     self[prop] = answers[prop];
                 }
             });
-            //Validate the apiPath
-            if (this.apiPath) {
+            //parse the API
+            if (answers.apiPath) {
                 this._parse(done);
             }
         }.bind(this));
