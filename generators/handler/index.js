@@ -11,6 +11,16 @@ var Frameworks = [
     'restify'
 ];
 
+var operationType = [
+    'get',
+    'post',
+    'put',
+    'delete',
+    'head',
+    'options',
+    'patch'
+],
+
 module.exports = Generators.Base.extend({
     constructor: function () {
         Generators.Base.apply(this, arguments);
@@ -25,15 +35,13 @@ module.exports = Generators.Base.extend({
         this.option('handlerPath');
     },
     initializing: {
-        helloMsg: function () {
-            this.log('Swaggerize Generator');
-            this.log('Tell us a bit about your application');
-        },
         //Validate the apiPath option in the beginning itself. Prompt for user input if the option is an invalid path.
         apiPath: function () {
             var done = this.async();
             this.apiPath = this.options.apiPath;
-            if (this.apiPath) {
+            this.api = this.options.api;
+            //If API is not passed as an option and the apiPath is valid, then, validate the api Spec.
+            if (!this.api && this.apiPath) {
                 this._validateSpec(done);
             } else {
                 done();
@@ -80,28 +88,7 @@ module.exports = Generators.Base.extend({
         var validate = function (propName) {
             return !!propName;
         }
-        this.prompt([{
-            name: 'appName',
-            message: 'What would you like to call this project:',
-            default: this.appName, // Default to current folder name
-            validate: validate
-        },
-        {
-            name: 'creatorName',
-            message: 'Your name:',
-            validate: validate
-        },
-        {
-            name: 'githubUser',
-            message: 'Your github user name:',
-            validate: validate
-        },
-        {
-            name: 'email',
-            message: 'Your email:',
-            validate: validate
-        },
-        //Following are required props
+        this.prompt([
         {
             name: 'apiPath',
             message: 'Path (or URL) to swagger document:',
@@ -144,48 +131,72 @@ module.exports = Generators.Base.extend({
         }.bind(this));
     },
     configuring: function () {
-        var oldRoot = this.destinationRoot();
-        //Set the destination root based on appname.
-        if (this.appName && Path.basename(oldRoot) !== this.appName) {
-            this.destinationRoot(Path.join(oldRoot, this.appName));
+        var done = this.async();
+        if (Frameworks.indexOf(this.framework) === -1) {
+            done(new Error('Invalid framework ' + this.framework + '. Framework should be one of these : ' + Frameworks));
+        } else {
+            done();
         }
-
-        this.apiPathRel = '.' + Path.sep + 'config' + Path.sep + 'api.json';
-        this.apiConfigPath = Path.join(this.destinationPath(), this.apiPathRel);
-        this.slugAppName = _.slugify(this.appName);
     },
     writing: {
-        app: function () {
-            var self = this;
-            this.fs.copy(
-                this.templatePath('.*'),
-                this.destinationPath()
-            );
-            //Templates
-            ['package.json', 'README.md'].forEach(function (file) {
-                self.fs.copyTpl(
-                    self.templatePath(file),
-                    self.destinationPath(file),
-                    self
-                );
-            });
-            this.fs.copyTpl(
-                this.templatePath(Path.join(this.framework, 'server.js')),
-                this.destinationPath('server.js'),
-                this
-            );
-        },
         handlers: function () {
-            this.composeWith('swaggerize:handler', {
-                options: {
-                    api: this.api,
-                    apiPath: this.apiPath,
-                    handlerPath: this.handlerPath,
-                    framework: this.framework
-                }
-            }, {
-                local: require.resolve('../handler')
-            });
+            var self = this;
+            var paths = this.api.paths
+            if (paths) {
+                Object.keys(paths).forEach(function (path) {
+                    var pathStr = path.replace(/^\/|\/$/g, '');
+                    var handlerPath = Path.join(self.handlerPath, pathStr + '.js')
+                    var pathObj = paths[path];
+                    var route = {
+                        path: path,
+                        operations: []
+                    };
+                    Object.keys(pathObj).forEach(function (method) {
+                        var commonParams = [];
+                        var operationObj = pathObj[method];
+
+                        if (method === 'parameters') {
+                            /*
+                             * A list of parameters that are applicable for all the operations described under this path.
+                             * These parameters can be overridden at the operation level, but cannot be removed there.
+                             * The list MUST NOT include duplicated parameters
+                             */
+                            commonParams = operationObj;
+                        } else if (operationType.indexOf(method) !== -1) {
+                            /*
+                             * The operation for the Path. get, post. put etc.
+                             */
+                            var parameters = commonParams;
+                            if (operationObj.parameters) {
+                                parameters = commonParams.concat(operationObj.parameters);
+                            }
+
+                            route.operations.push({
+                                name: operationObj.operationId,
+                                description: operationObj.description,
+                                summary: operationObj.summary,
+                                method: method,
+                                parameters: parameters && parameters.map(function (p) { return p.name }).join(', '),
+                                produces: operationObj.produces && operationObj.produces.join(', '),
+                                responses: operationObj.responses && Object.keys(operationObj.responses).join(', '),
+                            });
+                        }
+                    });
+                    /*
+                     * Schema Extensions for Handlers: (x-handler)
+                     * An alternative to automatically determining handlers based on a directory structure,
+                     * handlers can be specified using x-handler
+                     */
+                    if (pathObj['x-handler']) {
+                        handlerPath = pathObj['x-handler'];
+                    }
+                    self.fs.copyTpl(
+                        self.templatePath(Path.join(self.framework, 'handler.js')),
+                        self.destinationPath(handlerPath),
+                        route
+                    );
+                });
+            }
         }
     }
 });
