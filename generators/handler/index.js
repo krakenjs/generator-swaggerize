@@ -19,7 +19,7 @@ var operationType = [
     'head',
     'options',
     'patch'
-],
+];
 
 module.exports = Generators.Base.extend({
     constructor: function () {
@@ -154,7 +154,7 @@ module.exports = Generators.Base.extend({
                     Object.keys(pathObj).forEach(function (method) {
                         var commonParams = [];
                         var operationObj = pathObj[method];
-
+                        method = method.toLowerCase();
                         if (method === 'parameters') {
                             /*
                              * A list of parameters that are applicable for all the operations described under this path.
