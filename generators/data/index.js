@@ -5,21 +5,19 @@ var Fs = require('fs');
 var Path = require('path');
 var _ = require('underscore.string');
 var Util = require('../../lib/util');
-var Frameworks = Util.Frameworks;
-var operationType = Util.operationType;
+
+var operationType = require('../../lib/util').operationType;
 
 module.exports = Generators.Base.extend({
     constructor: function () {
         Generators.Base.apply(this, arguments);
         /*
          * Options :
-         *  --framework
          *  --apiPath
-         *  --handlerPath
+         *  --modelPath
          */
-        this.option('framework');
         this.option('apiPath');
-        this.option('handlerPath');
+        this.option('dataPath');
     },
     initializing: {
         //Validate the apiPath option in the beginning itself. Prompt for user input if the option is an invalid path.
@@ -38,30 +36,10 @@ module.exports = Generators.Base.extend({
             done();
         },
         sefDefaults: function () {
-            var self = this;
-            /**
-             * Assume that this.destinationRoot() is the base path and direcory name is the appname default.
-             */
-            var basePath = this.destinationRoot();
-            var pkgPath = Path.resolve(basePath, 'package.json');
-            var framework;
             var apiPathRel = '.' + Path.sep + 'config' + Path.sep + 'swagger.json';
-            this.appName = Path.basename(basePath);
-            //If package.json exists, get the default framework details from package.json dependencies
-            if (Fs.existsSync(pkgPath)) {
-                this.appPkg = require(pkgPath);
-                for (var i in Frameworks) {
-                    framework = Frameworks[i];
-                    if (this.appPkg.dependencies && Object.keys(this.appPkg.dependencies).indexOf(framework) !== -1) {
-                        self.framework = framework;
-                        break;
-                    }
-                }
-            }
-            this.framework = this.options.framework || this.framework;
-            this.handlerPath = this.options.handlerPath || '.' + Path.sep + 'handlers';
-            this.dataPath = this.options.dataPath || '.' + Path.sep + 'data';
             this.apiConfigPath = this.options.apiConfigPath || Path.join(this.destinationPath(), apiPathRel);
+            this.dataPath = this.options.dataPath || '.' + Path.sep + 'data';
+            this.mockgenPath = Path.join(this.dataPath, 'mockgen.js');
         }
     },
     _validateSpec: function (done) {
@@ -91,21 +69,6 @@ module.exports = Generators.Base.extend({
             },
             default: this.apiPath,
             validate: validate
-        },
-        {
-            type: 'list',
-            name: 'framework',
-            message: 'Framework:',
-            default: this.framework,
-            when: function () {
-                return !self.framework;
-            },
-            choices: Frameworks.map(function (framework) {
-                return {
-                    name: framework,
-                    value: framework
-                };
-            })
         }], function (answers) {
             var self = this;
             Object.keys(answers).forEach(function (prop) {
@@ -122,14 +85,6 @@ module.exports = Generators.Base.extend({
             }
 
         }.bind(this));
-    },
-    configuring: function () {
-        var done = this.async();
-        if (Frameworks.indexOf(this.framework) === -1) {
-            done(new Error('Invalid framework ' + this.framework + '. Framework should be one of these : ' + Frameworks));
-        } else {
-            done();
-        }
     },
     writing: {
         config: function () {
@@ -154,30 +109,27 @@ module.exports = Generators.Base.extend({
                 done();
             }
         },
-        data: function () {
-            this.composeWith('swaggerize:data', {
-                options: {
-                    api: this.api,
-                    apiPath: this.apiPath,
-                    apiConfigPath: this.apiConfigPath
-                }
-            }, {
-                local: require.resolve('../data')
-            });
+        mockgen: function () {
+            var tmpl = {
+                apiConfigPath: Util.relative(this.destinationPath(this.mockgenPath), this.apiConfigPath)
+            };
+
+            this.fs.copyTpl(
+                this.templatePath('mockgen.js'),
+                this.destinationPath(this.mockgenPath),
+                tmpl
+            );
         },
-        handlers: function () {
+        data: function () {
             var self = this;
             var paths = this.api.paths
             if (paths) {
                 Object.keys(paths).forEach(function (path) {
                     var pathStr = path.replace(/^\/|\/$/g, '');
-                    var handlerPath = Path.join(self.handlerPath, pathStr + '.js');
                     var dataPath = Path.join(self.dataPath, pathStr + '.js');
                     var pathObj = paths[path];
-
                     var route = {
                         path: path,
-                        dataPath: Util.relative(self.destinationPath(handlerPath), self.destinationPath(dataPath)),
                         operations: []
                     };
                     Object.keys(pathObj).forEach(function (method) {
@@ -196,32 +148,26 @@ module.exports = Generators.Base.extend({
                              * The operation for the Path. get, post. put etc.
                              */
                             var parameters = commonParams;
+                            var responses = operationObj.responses;
                             if (operationObj.parameters) {
                                 parameters = commonParams.concat(operationObj.parameters);
                             }
-
                             route.operations.push({
                                 name: operationObj.operationId,
                                 description: operationObj.description,
                                 summary: operationObj.summary,
                                 method: method,
                                 parameters: parameters && parameters.map(function (p) { return p.name }).join(', '),
-                                produces: operationObj.produces && operationObj.produces.join(', '),
-                                responses: operationObj.responses ? Object.keys(operationObj.responses): [],
+                                responses:  responses ? Object.keys(responses) : []
                             });
                         }
                     });
-                    /*
-                     * Schema Extensions for Handlers: (x-handler)
-                     * An alternative to automatically determining handlers based on a directory structure,
-                     * handlers can be specified using x-handler
-                     */
-                    if (pathObj['x-handler']) {
-                        handlerPath = pathObj['x-handler'];
-                    }
+                    //Set the mockgen module relative path
+                    route.mockgenPath = Util.relative(self.destinationPath(dataPath), self.destinationPath(self.mockgenPath));
+                    //Generate the data files.
                     self.fs.copyTpl(
-                        self.templatePath(Path.join(self.framework, 'handler.js')),
-                        self.destinationPath(handlerPath),
+                        self.templatePath('data.js'),
+                        self.destinationPath(dataPath),
                         route
                     );
                 });

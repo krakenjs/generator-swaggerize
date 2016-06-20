@@ -5,11 +5,7 @@ var Fs = require('fs');
 var Path = require('path');
 var _ = require('underscore.string');
 
-var Frameworks = [
-    'express',
-    'hapi',
-    'restify'
-];
+var Frameworks = require('../../lib/util').Frameworks;
 
 module.exports = Generators.Base.extend({
     constructor: function () {
@@ -150,7 +146,7 @@ module.exports = Generators.Base.extend({
             this.destinationRoot(Path.join(oldRoot, this.appName));
         }
 
-        this.apiPathRel = '.' + Path.sep + 'config' + Path.sep + 'api.json';
+        this.apiPathRel = '.' + Path.sep + 'config' + Path.sep + 'swagger.json';
         this.apiConfigPath = Path.join(this.destinationPath(), this.apiPathRel);
         this.slugAppName = _.slugify(this.appName);
     },
@@ -175,11 +171,34 @@ module.exports = Generators.Base.extend({
                 this
             );
         },
+        config: function () {
+            var self = this;
+            var done = this.async();
+            //Write to local config file only if the API is already validated
+            //Dereferenced and resolved $ref objects cannot be used in the local copy.
+            //So use `parse` API and then stringify the Objects to json format.
+            if(this.api) {
+                //Write the contents of the apiPath location to local config file.
+                Parser.parse(this.apiPath, function (error, api) {
+                    if (error) {
+                        done(error);
+                        return;
+                    }
+                    //Write as a JSON file.
+                    //TODO handle the yml file usecase
+                    self.write(self.apiConfigPath, JSON.stringify(api, null, 4));
+                    done();
+                });
+            } else {
+                done();
+            }
+        },
         handlers: function () {
             this.composeWith('swaggerize:handler', {
                 options: {
                     api: this.api,
                     apiPath: this.apiPath,
+                    apiConfigPath: this.apiConfigPath,
                     handlerPath: this.handlerPath,
                     framework: this.framework
                 }
