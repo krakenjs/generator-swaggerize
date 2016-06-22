@@ -12,7 +12,7 @@ var Parser = require('swagger-parser');
  * Test for <%=path%>
  */
 Test('<%=path%>', function (t) {
-    var apiPath = Path.resolve('<%=apiPathRel%>');
+    var apiPath = Path.resolve(__dirname, '<%=apiPathRel%>');
     var App = Express();
     App.use(BodyParser.json());
     App.use(Swaggerize({
@@ -33,7 +33,7 @@ Test('<%=path%>', function (t) {
          * responses: <%=operation.responses.join(', ')%>
          */
         t.test('test <%=operation.name%> <%=operation.method%> operation', function (t) {
-            Mockgen.requests({
+            Mockgen().requests({
                 path: '<%=path%>',
                 operation: '<%=operation.method%>'
             }, function (err, mock) {
@@ -65,8 +65,7 @@ Test('<%=path%>', function (t) {
                     <% if (operation.validateResp) {
                     %>var validate = Validator(api.paths['<%=path%>']['<%=operation.method%>']['responses']['<%=operation.response%>']['schema']);
                     t.ok(validate(res.body), 'Valid response');
-                    <%}%>
-                    t.end();
+                    <%}%>t.end();
                 });
             });
         });<%})%>

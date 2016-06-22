@@ -29,7 +29,7 @@
         "js-yaml": "^3.2.6",
         "supertest": "^1.2.0",
         "swagger-parser": "^3.4.1",
-        "tape": "^4",
+        "tape": "^4"
     },
     "scripts": {
         "test": "tape tests/*.js",

@@ -204,6 +204,7 @@ module.exports = Generators.Base.extend({
                             /*
                              * The operation for the Path. get, post. put etc.
                              */
+                            var parameters = commonParams;
                             var validateResp = false;
                             var response;
                             var responses = operationObj.responses;
@@ -215,7 +216,6 @@ module.exports = Generators.Base.extend({
                                     validateResp = true;
                                 }
                             }
-                            var parameters = commonParams;
                             if (operationObj.parameters) {
                                 parameters = commonParams.concat(operationObj.parameters);
                             }

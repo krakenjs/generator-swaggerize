@@ -20,7 +20,7 @@ module.exports = {
              * Using mock data generator module.
              * Replace this by actual data for the api.
              */
-            Mockgen.responses({
+            Mockgen().responses({
                 path: '<%=path%>',
                 operation: '<%=operation.method%>',
                 response: '<%=response%>'
