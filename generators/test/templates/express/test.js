@@ -17,7 +17,7 @@ Test('<%=path%>', function (t) {
     App.use(BodyParser.json());
     App.use(Swaggerize({
         api: apiPath,
-        handlers: Path.resolve('<%=handlerPath%>')
+        handlers: Path.resolve(__dirname, '<%=handlerPath%>')
     }));
     <%if (operations && operations.length > 0) {
     %>Parser.validate(apiPath, function (err, api) {

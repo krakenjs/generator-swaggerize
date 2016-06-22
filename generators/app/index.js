@@ -210,5 +210,8 @@ module.exports = Generators.Base.extend({
                 local: require.resolve('../test')
             });
         }
+    },
+    install: function () {
+        this.npmInstall();
     }
 });
