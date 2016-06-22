@@ -27,10 +27,7 @@ module.exports = Generators.Base.extend({
             var done = this.async();
             this.apiPath = this.options.apiPath;
             this.api = this.options.api;
-            if (this.api) {
-                //API available. Swagger parser already validated the API and the local copy got generated.
-                this.configGenerated = true;
-            } else if (this.apiPath) {
+            if (!this.api && this.apiPath) {
                 //If API is not passed as an option and the apiPath is valid, then, validate the api Spec.
                 this._validateSpec(done);
                 return;
@@ -132,28 +129,6 @@ module.exports = Generators.Base.extend({
         }
     },
     writing: {
-        config: function () {
-            var self = this;
-            var done = this.async();
-            //Write to local config file only if the API is already validated
-            //Dereferenced and resolved $ref objects cannot be used in the local copy.
-            //So use `parse` API and then stringify the Objects to json format.
-            if(this.api && !this.configGenerated) {
-                //Write the contents of the apiPath location to local config file.
-                Parser.parse(this.apiPath, function (error, api) {
-                    if (error) {
-                        done(error);
-                        return;
-                    }
-                    //Write as a JSON file.
-                    //TODO handle the yml file usecase
-                    self.write(self.apiConfigPath, JSON.stringify(api, null, 4));
-                    done();
-                });
-            } else {
-                done();
-            }
-        },
         data: function () {
             this.composeWith('swaggerize:data', {
                 options: {
@@ -220,11 +195,13 @@ module.exports = Generators.Base.extend({
                     if (pathObj['x-handler']) {
                         handlerPath = pathObj['x-handler'];
                     }
-                    self.fs.copyTpl(
-                        self.templatePath(Path.join(self.framework, 'handler.js')),
-                        self.destinationPath(handlerPath),
-                        route
-                    );
+                    if (route.operations && route.operations.length > 0) {
+                        self.fs.copyTpl(
+                            self.templatePath(Path.join(self.framework, 'handler.js')),
+                            self.destinationPath(handlerPath),
+                            route
+                        );
+                    }
                 });
             }
         }

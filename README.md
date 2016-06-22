@@ -12,6 +12,7 @@ Yeoman generator for swagger application with krakenjs/swaggerize tools.
 Generates projects for:
 - Express
 - Hapi
+- Restify
 
 See also:
 - [swaggerize-express](https://github.com/krakenjs/swaggerize-express)
@@ -35,14 +36,6 @@ Create a project:
 
 ```
 $ yo swaggerize
-```
-
-### Re-running handlers, test, and models generator
-
-In an existing project, you can run the generator with the `--only` option. This option supports a comma delimited string of types to generate.
-
-```
-$ yo swaggerize --only=handlers,models,tests
 ```
 
 ### Other CLI Options

@@ -173,28 +173,6 @@ module.exports = Generators.Base.extend({
                 this
             );
         },
-        config: function () {
-            var self = this;
-            var done = this.async();
-            //Write to local config file only if the API is already validated
-            //Dereferenced and resolved $ref objects cannot be used in the local copy.
-            //So use `parse` API and then stringify the Objects to json format.
-            if(this.api) {
-                //Write the contents of the apiPath location to local config file.
-                Parser.parse(this.apiPath, function (error, api) {
-                    if (error) {
-                        done(error);
-                        return;
-                    }
-                    //Write as a JSON file.
-                    //TODO handle the yml file usecase
-                    self.write(self.apiConfigPath, JSON.stringify(api, null, 4));
-                    done();
-                });
-            } else {
-                done();
-            }
-        },
         tests: function () {
             this.composeWith('swaggerize:test', {
                 options: {
@@ -212,6 +190,9 @@ module.exports = Generators.Base.extend({
         }
     },
     install: function () {
+        if (this.options['skip-npm-install']) {
+            return;
+        }
         this.npmInstall();
     }
 });

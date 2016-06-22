@@ -6,7 +6,6 @@ var Swaggerize = require('swaggerize-express');
 var Path = require('path');
 var Request = require('supertest');
 var Mockgen = require('<%=mockgenPath%>');
-var Validator = require('is-my-json-valid');
 var Parser = require('swagger-parser');
 /**
  * Test for <%=path%>
@@ -19,8 +18,7 @@ Test('<%=path%>', function (t) {
         api: apiPath,
         handlers: Path.resolve(__dirname, '<%=handlerPath%>')
     }));
-    <%if (operations && operations.length > 0) {
-    %>Parser.validate(apiPath, function (err, api) {
+    Parser.validate(apiPath, function (err, api) {
         t.ok(!err, 'No parse error');
         t.ok(api, 'Valid swagger api');
         <%operations.forEach(function (operation, i) {
@@ -47,15 +45,15 @@ Test('<%=path%>', function (t) {
                     .<%=mt%>('<%=basePath%>' + mock.request.path);
                 <%
                 //Send the request body for `post` and `put` operations
-                if (mt === 'post' || mt === 'put') {%>
-                if (mock.request.body) {
+                if (mt === 'post' || mt === 'put') {
+                %>if (mock.request.body) {
                     //Send the request body
-                    request.send(mock.request.body);
+                    request = request.send(mock.request.body);
                 }<%}%>
                 // If headers are present, set the headers.
                 if (mock.request.headers && mock.request.headers.length > 0) {
                     Object.keys(mock.request.headers).forEach(function (headerName) {
-                        request.set(headerName, mock.request.headers[headerName]);
+                        request = request.set(headerName, mock.request.headers[headerName]);
                     });
                 }
                 request.end(function (err, res) {
@@ -63,11 +61,12 @@ Test('<%=path%>', function (t) {
                     <% if (operation.response) {
                     %>t.ok(res.statusCode === <%=(operation.response === 'default')?200:operation.response%>, 'Ok response status');<%}%>
                     <% if (operation.validateResp) {
-                    %>var validate = Validator(api.paths['<%=path%>']['<%=operation.method%>']['responses']['<%=operation.response%>']['schema']);
+                    %>var Validator = require('is-my-json-valid');
+                    var validate = Validator(api.paths['<%=path%>']['<%=operation.method%>']['responses']['<%=operation.response%>']['schema']);
                     t.ok(validate(res.body), 'Valid response');
                     <%}%>t.end();
                 });
             });
         });<%})%>
-    });<%}%>
+    });
 });

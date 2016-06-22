@@ -25,10 +25,7 @@ module.exports = Generators.Base.extend({
             var done = this.async();
             this.apiPath = this.options.apiPath;
             this.api = this.options.api;
-            if (this.api) {
-                //API available. Swagger parser already validated the API and the local copy got generated.
-                this.configGenerated = true;
-            } else if (this.apiPath) {
+            if (!this.api && this.apiPath) {
                 //If API is not passed as an option and the apiPath is valid, then, validate the api Spec.
                 this._validateSpec(done);
                 return;
@@ -93,7 +90,7 @@ module.exports = Generators.Base.extend({
             //Write to local config file only if the API is already validated
             //Dereferenced and resolved $ref objects cannot be used in the local copy.
             //So use `parse` API and then stringify the Objects to json format.
-            if(this.api && !this.configGenerated) {
+            if(this.api) {
                 //Write the contents of the apiPath location to local config file.
                 Parser.parse(this.apiPath, function (error, api) {
                     if (error) {
@@ -165,11 +162,13 @@ module.exports = Generators.Base.extend({
                     //Set the mockgen module relative path
                     route.mockgenPath = Util.relative(self.destinationPath(dataPath), self.destinationPath(self.mockgenPath));
                     //Generate the data files.
-                    self.fs.copyTpl(
-                        self.templatePath('data.js'),
-                        self.destinationPath(dataPath),
-                        route
-                    );
+                    if (route.operations && route.operations.length > 0) {
+                        self.fs.copyTpl(
+                            self.templatePath('data.js'),
+                            self.destinationPath(dataPath),
+                            route
+                        );
+                    }
                 });
             }
         }

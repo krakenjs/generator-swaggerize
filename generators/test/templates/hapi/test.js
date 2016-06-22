@@ -1,40 +1,80 @@
 'use strict';
-
+var Test = require('tape');
+var Hapi = require('hapi');
+var BodyParser = require('body-parser');
+var Swaggerize = require('swaggerize-hapi');
+var Path = require('path');
+var Mockgen = require('<%=mockgenPath%>');
+var Parser = require('swagger-parser');
 /**
- * Operations on <%=path%>
+ * Test for <%=path%>
  */
-module.exports = {
-    <%operations.forEach(function (operation, i) {%>
-    /**
-     * summary: <%=operation.summary%>
-     * description: <%=operation.description%>
-     * parameters: <%=operation.parameters%>
-     * produces: <%=operation.produces%>
-     * responses: <%=operation.responses.join(', ')%>
-     */
-    <%=operation.method%>: function <%=operation.name%>(req, reply, next) {
-        <%if (operation.responses.length > 0) {
-            var resp = operation.responses[0];
-            var statusStr = (resp === 'default') ? 200 : resp%>
-        /**
-         * Get the data for response <%=resp%>
-         * For response `default` status 200 is used.
-         */
-        var status = <%=statusStr%>;
-        var provider = dataProvider['<%=operation.method%>']['<%=resp%>'];
-        provider(req, res, function (err, data) {
-            if (err) {
-                next(err);
-                return;
-            }
-            res.status(status).send(data);
-            reply(data).code(status);
+Test('<%=path%>', function (t) {
+    var apiPath = Path.resolve(__dirname, '<%=apiPathRel%>');
+    var server;
+
+    Parser.validate(apiPath, function (err, api) {
+        t.ok(!err, 'No parse error');
+        t.ok(api, 'Valid swagger api');
+        t.test('server', function (t) {
+            t.plan(1);
+            server = new Hapi.Server();
+            server.connection({});
+            server.register({
+                register: Swaggerize,
+                options: {
+                    api: apiPath,
+                    handlers: Path.join(__dirname, '<%=handlerPath%>')
+                }
+            }, function (err) {
+                t.error(err, 'No error.');
+            });
         });
-        <%} else {%>
-        var status = 501;
-        var data = {};
-        reply(data).code(status);
-        <%}%>
-    }<%if (i < operations.length - 1) {%>, <%}%>
-    <%})%>
-};
+        <%operations.forEach(function (operation, i) {
+            var mt = operation.method.toLowerCase();
+        %>/**
+         * summary: <%=operation.summary%>
+         * description: <%=operation.description%>
+         * parameters: <%=operation.parameters%>
+         * produces: <%=operation.produces%>
+         * responses: <%=operation.responses.join(', ')%>
+         */
+        t.test('test <%=operation.name%> <%=operation.method%> operation', function (t) {
+            Mockgen().requests({
+                path: '<%=path%>',
+                operation: '<%=operation.method%>'
+            }, function (err, mock) {
+                var options;
+                t.ok(!err);
+                t.ok(mock);
+                t.ok(mock.request);
+                //Get the resolved path from mock request
+                //Mock request Path templates({}) are resolved using path parameters
+                options = {
+                    method: <%=mt%>,
+                    url: '<%=basePath%>' + mock.request.path
+                };
+                <%
+                //Send the request body for `post` and `put` operations
+                if (mt === 'post' || mt === 'put')
+                {%>if (mock.request.body) {
+                    //Send the request body
+                    options.payload = mock.request.body;
+                }<%}%>
+                // If headers are present, set the headers.
+                if (mock.request.headers && mock.request.headers.length > 0) {
+                    options.headers = mock.request.headers;
+                }
+                server.inject(options, function (res) {
+                    <% if (operation.response) {
+                    %>t.ok(res.statusCode === <%=(operation.response === 'default')?200:operation.response%>, 'Ok response status');<%}%>
+                    <% if (operation.validateResp) {
+                    %>var Validator = require('is-my-json-valid');
+                    var validate = Validator(api.paths['<%=path%>']['<%=operation.method%>']['responses']['<%=operation.response%>']['schema']);
+                    t.ok(validate(res.payload), 'Valid response');
+                    <%}%>t.end();
+                });
+            });
+        });<%})%>
+    });
+});
