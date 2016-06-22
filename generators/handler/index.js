@@ -1,12 +1,11 @@
 'use strict';
 var Generators = require('yeoman-generator');
 var Parser = require('swagger-parser');
-var Fs = require('fs');
 var Path = require('path');
-var _ = require('underscore.string');
 var Util = require('../../lib/util');
 var Frameworks = Util.Frameworks;
-var operationType = Util.operationType;
+var RouteGen = require('../../lib/routegen');
+var Prompt = require('../prompt');
 
 module.exports = Generators.Base.extend({
     constructor: function () {
@@ -35,30 +34,7 @@ module.exports = Generators.Base.extend({
             done();
         },
         sefDefaults: function () {
-            var self = this;
-            /**
-             * Assume that this.destinationRoot() is the base path and direcory name is the appname default.
-             */
-            var basePath = this.destinationRoot();
-            var pkgPath = Path.resolve(basePath, 'package.json');
-            var framework;
-            var apiPathRel = '.' + Path.sep + 'config' + Path.sep + 'swagger.json';
-            this.appName = Path.basename(basePath);
-            //If package.json exists, get the default framework details from package.json dependencies
-            if (Fs.existsSync(pkgPath)) {
-                this.appPkg = require(pkgPath);
-                for (var i in Frameworks) {
-                    framework = Frameworks[i];
-                    if (this.appPkg.dependencies && Object.keys(this.appPkg.dependencies).indexOf(framework) !== -1) {
-                        self.framework = framework;
-                        break;
-                    }
-                }
-            }
-            this.framework = this.options.framework || this.framework;
-            this.handlerPath = this.options.handlerPath || '.' + Path.sep + 'handlers';
-            this.dataPath = this.options.dataPath || '.' + Path.sep + 'data';
-            this.apiConfigPath = this.options.apiConfigPath || Path.join(this.destinationPath(), apiPathRel);
+            Util.sefDefaults(this);
         }
     },
     _validateSpec: function (done) {
@@ -74,50 +50,19 @@ module.exports = Generators.Base.extend({
     },
     prompting: function () {
         var done = this.async();
-        var self = this;
-        var validate = function (propName) {
-            return !!propName;
-        }
-        this.prompt([
-        {
-            name: 'apiPath',
-            message: 'Path (or URL) to swagger document:',
-            required: true,
-            when: function () {
-                return !self.apiPath;
-            },
-            default: this.apiPath,
-            validate: validate
-        },
-        {
-            type: 'list',
-            name: 'framework',
-            message: 'Framework:',
-            default: this.framework,
-            when: function () {
-                return !self.framework;
-            },
-            choices: Frameworks.map(function (framework) {
-                return {
-                    name: framework,
-                    value: framework
-                };
-            })
-        }], function (answers) {
+        this.prompt(Prompt('handler', this), function (answers) {
             var self = this;
             Object.keys(answers).forEach(function (prop) {
                 if (answers[prop] !== null && answers[prop] !== undefined) {
                     self[prop] = answers[prop];
                 }
             });
-
             //parse and validate the Swagger API entered by the user.
             if (answers.apiPath) {
                 this._validateSpec(done);
             } else {
                 done();
             }
-
         }.bind(this));
     },
     configuring: function () {
@@ -143,50 +88,13 @@ module.exports = Generators.Base.extend({
         },
         handlers: function () {
             var self = this;
-            var paths = this.api.paths
+            var paths = this.api.paths;
             if (paths) {
                 Object.keys(paths).forEach(function (path) {
                     var pathStr = path.replace(/^\/|\/$/g, '');
                     var handlerPath = Path.join(self.handlerPath, pathStr + '.js');
-                    var dataPath = Path.join(self.dataPath, pathStr + '.js');
                     var pathObj = paths[path];
-
-                    var route = {
-                        path: path,
-                        dataPath: Util.relative(self.destinationPath(handlerPath), self.destinationPath(dataPath)),
-                        operations: []
-                    };
-                    Object.keys(pathObj).forEach(function (method) {
-                        var commonParams = [];
-                        var operationObj = pathObj[method];
-                        method = method.toLowerCase();
-                        if (method === 'parameters') {
-                            /*
-                             * A list of parameters that are applicable for all the operations described under this path.
-                             * These parameters can be overridden at the operation level, but cannot be removed there.
-                             * The list MUST NOT include duplicated parameters
-                             */
-                            commonParams = operationObj;
-                        } else if (operationType.indexOf(method) !== -1) {
-                            /*
-                             * The operation for the Path. get, post. put etc.
-                             */
-                            var parameters = commonParams;
-                            if (operationObj.parameters) {
-                                parameters = commonParams.concat(operationObj.parameters);
-                            }
-
-                            route.operations.push({
-                                name: operationObj.operationId,
-                                description: operationObj.description,
-                                summary: operationObj.summary,
-                                method: method,
-                                parameters: parameters && parameters.map(function (p) { return p.name }).join(', '),
-                                produces: operationObj.produces && operationObj.produces.join(', '),
-                                responses: operationObj.responses ? Object.keys(operationObj.responses): [],
-                            });
-                        }
-                    });
+                    var route;
                     /*
                      * Schema Extensions for Handlers: (x-handler)
                      * An alternative to automatically determining handlers based on a directory structure,
@@ -195,10 +103,15 @@ module.exports = Generators.Base.extend({
                     if (pathObj['x-handler']) {
                         handlerPath = pathObj['x-handler'];
                     }
+                    //Set the genFilePath path
+                    self.genFilePath = self.destinationPath(handlerPath);
+                    //Generate the route template obj.
+                    route = RouteGen(self, path, pathObj);
+
                     if (route.operations && route.operations.length > 0) {
                         self.fs.copyTpl(
                             self.templatePath(Path.join(self.framework, 'handler.js')),
-                            self.destinationPath(handlerPath),
+                            self.genFilePath,
                             route
                         );
                     }

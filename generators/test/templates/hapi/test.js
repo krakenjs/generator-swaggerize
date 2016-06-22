@@ -24,7 +24,7 @@ Test('<%=path%>', function (t) {
                 register: Swaggerize,
                 options: {
                     api: apiPath,
-                    handlers: Path.join(__dirname, '<%=handlerPath%>')
+                    handlers: Path.join(__dirname, '<%=handlerDir%>')
                 }
             }, function (err) {
                 t.error(err, 'No error.');

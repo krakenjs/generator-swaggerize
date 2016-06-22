@@ -16,7 +16,7 @@ Server.register({
         api: Path.resolve('<%=apiPathRel%>'),
         handlers: Path.resolve('<%=handlerPath%>')
     }
-}, function (error) {
+}, function () {
     Server.start(function () {
         Server.plugins.swagger.setHost(Server.info.host + ':' + Server.info.port);
     });
