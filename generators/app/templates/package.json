@@ -19,14 +19,17 @@
         "hapi": "^9.0.0",
         "swaggerize-hapi": "^2.0.0-"<%}%><% if (framework === 'restify') {%>
         "swaggerize-restify": "^2.0.0",
-        "restify": "^4.0.0"<%}%>
+        "restify": "^4.0.0"<%}%>,
+        "swagmock": "~0.0.1"
     },
     "devDependencies": {
-        "tape": "^4",
-        "js-yaml": "^3.2.6",
         "eslint": "^2",
         "istanbul": "~0.4.3",
-        "supertest": "^1.2.0"
+        "is-my-json-valid": "^2.13.1",
+        "js-yaml": "^3.2.6",
+        "supertest": "^1.2.0",
+        "swagger-parser": "^3.4.1",
+        "tape": "^4",
     },
     "scripts": {
         "test": "tape tests/*.js",

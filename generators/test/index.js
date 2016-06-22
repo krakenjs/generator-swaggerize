@@ -16,10 +16,12 @@ module.exports = Generators.Base.extend({
          *  --framework
          *  --apiPath
          *  --handlerPath
+         *  --testPath
          */
         this.option('framework');
         this.option('apiPath');
         this.option('handlerPath');
+        this.option('testPath');
     },
     initializing: {
         //Validate the apiPath option in the beginning itself. Prompt for user input if the option is an invalid path.
@@ -60,6 +62,7 @@ module.exports = Generators.Base.extend({
             }
             this.framework = this.options.framework || this.framework;
             this.handlerPath = this.options.handlerPath || '.' + Path.sep + 'handlers';
+            this.testPath = this.options.testPath || '.' + Path.sep + 'tests';
             this.dataPath = this.options.dataPath || '.' + Path.sep + 'data';
             this.apiConfigPath = this.options.apiConfigPath || Path.join(this.destinationPath(), apiPathRel);
         }
@@ -155,30 +158,35 @@ module.exports = Generators.Base.extend({
             }
         },
         data: function () {
-            this.composeWith('swaggerize:data', {
+            this.composeWith('swaggerize:handler', {
                 options: {
                     api: this.api,
                     apiPath: this.apiPath,
+                    handlerPath: this.handlerPath,
                     dataPath: this.dataPath,
-                    apiConfigPath: this.apiConfigPath
+                    apiConfigPath: this.apiConfigPath,
+                    framework: this.framework
                 }
             }, {
-                local: require.resolve('../data')
+                local: require.resolve('../handler')
             });
         },
-        handlers: function () {
+        tests: function () {
             var self = this;
             var paths = this.api.paths
             if (paths) {
                 Object.keys(paths).forEach(function (path) {
                     var pathStr = path.replace(/^\/|\/$/g, '');
-                    var handlerPath = Path.join(self.handlerPath, pathStr + '.js');
-                    var dataPath = Path.join(self.dataPath, pathStr + '.js');
+                    var testPath = Path.join(self.testPath, pathStr + '.js');
+                    var mockgenPath = Path.join(self.dataPath, 'mockgen.js');
                     var pathObj = paths[path];
 
                     var route = {
+                        basePath: self.api.basePath ? self.api.basePath : '',
                         path: path,
-                        dataPath: Util.relative(self.destinationPath(handlerPath), self.destinationPath(dataPath)),
+                        apiPathRel: Util.relative(self.destinationPath(testPath), self.apiConfigPath),
+                        mockgenPath: Util.relative(self.destinationPath(testPath), self.destinationPath(mockgenPath)),
+                        handlerPath: Util.relative(self.destinationPath(testPath), self.destinationPath(self.handlerPath)),
                         operations: []
                     };
                     Object.keys(pathObj).forEach(function (method) {
@@ -196,6 +204,17 @@ module.exports = Generators.Base.extend({
                             /*
                              * The operation for the Path. get, post. put etc.
                              */
+                            var validateResp = false;
+                            var response;
+                            var responses = operationObj.responses;
+                            var respArr = responses ? Object.keys(responses): [];
+                            if (respArr.length > 0 ) {
+                                //Use the first response as the default response
+                                response = respArr[0];
+                                if(responses[response] && responses[response].schema) {
+                                    validateResp = true;
+                                }
+                            }
                             var parameters = commonParams;
                             if (operationObj.parameters) {
                                 parameters = commonParams.concat(operationObj.parameters);
@@ -208,21 +227,15 @@ module.exports = Generators.Base.extend({
                                 method: method,
                                 parameters: parameters && parameters.map(function (p) { return p.name }).join(', '),
                                 produces: operationObj.produces && operationObj.produces.join(', '),
-                                responses: operationObj.responses ? Object.keys(operationObj.responses): [],
+                                responses:  respArr,
+                                response: response,
+                                validateResp: validateResp
                             });
                         }
                     });
-                    /*
-                     * Schema Extensions for Handlers: (x-handler)
-                     * An alternative to automatically determining handlers based on a directory structure,
-                     * handlers can be specified using x-handler
-                     */
-                    if (pathObj['x-handler']) {
-                        handlerPath = pathObj['x-handler'];
-                    }
                     self.fs.copyTpl(
-                        self.templatePath(Path.join(self.framework, 'handler.js')),
-                        self.destinationPath(handlerPath),
+                        self.templatePath(Path.join(self.framework, 'test.js')),
+                        self.destinationPath(testPath),
                         route
                     );
                 });

@@ -1,22 +1,22 @@
 'use strict';
-var dataProvider = require('<%=dataPath%>');
+
 /**
  * Operations on <%=path%>
  */
 module.exports = {
-    <%operations.forEach(function (operation, i)
-    {%>/**
+    <%operations.forEach(function (operation, i) {%>
+    /**
      * summary: <%=operation.summary%>
      * description: <%=operation.description%>
      * parameters: <%=operation.parameters%>
      * produces: <%=operation.produces%>
      * responses: <%=operation.responses.join(', ')%>
      */
-    <%=operation.method%>: function <%=operation.name%>(req, res, next) {
+    <%=operation.method%>: function <%=operation.name%>(req, reply, next) {
         <%if (operation.responses.length > 0) {
             var resp = operation.responses[0];
-            var statusStr = (resp === 'default') ? 200 : resp;
-        %>/**
+            var statusStr = (resp === 'default') ? 200 : resp%>
+        /**
          * Get the data for response <%=resp%>
          * For response `default` status 200 is used.
          */
@@ -28,11 +28,13 @@ module.exports = {
                 return;
             }
             res.status(status).send(data);
-        });<%} else {%>
+            reply(data).code(status);
+        });
+        <%} else {%>
         var status = 501;
         var data = {};
-        res.status(status).send(data);
+        reply(data).code(status);
         <%}%>
-    }<%if (i < operations.length - 1) {%>,
-    <%}%><%});%>
+    }<%if (i < operations.length - 1) {%>, <%}%>
+    <%})%>
 };

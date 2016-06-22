@@ -57,6 +57,8 @@ module.exports = Generators.Base.extend({
             }
             this.framework = this.options.framework || this.framework;
             this.handlerPath = this.options.handlerPath || '.' + Path.sep + 'handlers';
+            this.testPath = this.options.testPath || '.' + Path.sep + 'tests';
+            this.dataPath = this.options.dataPath || '.' + Path.sep + 'data';
         }
     },
     _validateSpec: function (done) {
@@ -193,17 +195,19 @@ module.exports = Generators.Base.extend({
                 done();
             }
         },
-        handlers: function () {
-            this.composeWith('swaggerize:handler', {
+        tests: function () {
+            this.composeWith('swaggerize:test', {
                 options: {
                     api: this.api,
                     apiPath: this.apiPath,
                     apiConfigPath: this.apiConfigPath,
                     handlerPath: this.handlerPath,
+                    testPath: this.testPath,
+                    dataPath: this.dataPath,
                     framework: this.framework
                 }
             }, {
-                local: require.resolve('../handler')
+                local: require.resolve('../test')
             });
         }
     }
