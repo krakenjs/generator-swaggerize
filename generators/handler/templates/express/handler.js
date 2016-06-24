@@ -27,7 +27,7 @@ module.exports = {
                 next(err);
                 return;
             }
-            res.status(status).send(data);
+            res.status(status).send(data && data.responses);
         });<%} else {%>
         var status = 501;
         var data = {};

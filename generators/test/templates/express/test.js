@@ -14,12 +14,15 @@ Test('<%=path%>', function (t) {
     var apiPath = Path.resolve(__dirname, '<%=apiPathRel%>');
     var App = Express();
     App.use(BodyParser.json());
+    App.use(BodyParser.urlencoded({
+         "extended": true
+    }));
     App.use(Swaggerize({
         api: apiPath,
         handlers: Path.resolve(__dirname, '<%=handlerDir%>')
     }));
     Parser.validate(apiPath, function (err, api) {
-        t.ok(!err, 'No parse error');
+        t.error(err, 'No parse error');
         t.ok(api, 'Valid swagger api');
         <%operations.forEach(function (operation, i) {
             var mt = operation.method.toLowerCase();
@@ -36,7 +39,7 @@ Test('<%=path%>', function (t) {
                 operation: '<%=operation.method%>'
             }, function (err, mock) {
                 var request;
-                t.ok(!err);
+                t.error(err);
                 t.ok(mock);
                 t.ok(mock.request);
                 //Get the resolved path from mock request
@@ -49,6 +52,11 @@ Test('<%=path%>', function (t) {
                 %>if (mock.request.body) {
                     //Send the request body
                     request = request.send(mock.request.body);
+                } else if (mock.request.formData){
+                    //Send the request form data
+                    request = request.send(mock.request.formData);
+                    //Set the Content-Type as application/x-www-form-urlencoded
+                    request = request.set('Content-Type', 'application/x-www-form-urlencoded');
                 }<%}%>
                 // If headers are present, set the headers.
                 if (mock.request.headers && mock.request.headers.length > 0) {
@@ -57,13 +65,17 @@ Test('<%=path%>', function (t) {
                     });
                 }
                 request.end(function (err, res) {
-                    t.ok(!err, 'No error');
+                    t.error(err, 'No error');
                     <% if (operation.response) {
                     %>t.ok(res.statusCode === <%=(operation.response === 'default')?200:operation.response%>, 'Ok response status');<%}%>
                     <% if (operation.validateResp) {
                     %>var Validator = require('is-my-json-valid');
                     var validate = Validator(api.paths['<%=path%>']['<%=operation.method%>']['responses']['<%=operation.response%>']['schema']);
-                    t.ok(validate(res.body), 'Valid response');
+                    var response = res.body;
+                    if (Object.keys(response).length <= 0) {
+                        response = res.text;
+                    }
+                    t.ok(validate(response), 'Valid response');
                     <%}%>t.end();
                 });
             });

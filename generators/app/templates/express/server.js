@@ -11,6 +11,9 @@ var App = Express();
 var Server = Http.createServer(App);
 
 App.use(BodyParser.json());
+App.use(BodyParser.urlencoded({
+     "extended": true
+}));
 
 App.use(Swaggerize({
     api: Path.resolve('<%=apiPathRel%>'),

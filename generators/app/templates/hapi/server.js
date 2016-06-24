@@ -19,5 +19,8 @@ Server.register({
 }, function () {
     Server.start(function () {
         Server.plugins.swagger.setHost(Server.info.host + ':' + Server.info.port);
+        /* eslint-disable no-console */
+        console.log('App running on %s:%d', Server.info.host, Server.info.port);
+        /* eslint-disable no-console */
     });
 });

@@ -1,7 +1,6 @@
 'use strict';
 var Test = require('tape');
 var Hapi = require('hapi');
-var BodyParser = require('body-parser');
 var Swaggerize = require('swaggerize-hapi');
 var Path = require('path');
 var Mockgen = require('<%=mockgenPath%>');
@@ -14,7 +13,7 @@ Test('<%=path%>', function (t) {
     var server;
 
     Parser.validate(apiPath, function (err, api) {
-        t.ok(!err, 'No parse error');
+        t.error(err, 'No parse error');
         t.ok(api, 'Valid swagger api');
         t.test('server', function (t) {
             t.plan(1);
@@ -45,13 +44,13 @@ Test('<%=path%>', function (t) {
                 operation: '<%=operation.method%>'
             }, function (err, mock) {
                 var options;
-                t.ok(!err);
+                t.error(err);
                 t.ok(mock);
                 t.ok(mock.request);
                 //Get the resolved path from mock request
                 //Mock request Path templates({}) are resolved using path parameters
                 options = {
-                    method: <%=mt%>,
+                    method: '<%=mt%>',
                     url: '<%=basePath%>' + mock.request.path
                 };
                 <%
@@ -60,6 +59,12 @@ Test('<%=path%>', function (t) {
                 {%>if (mock.request.body) {
                     //Send the request body
                     options.payload = mock.request.body;
+                } else if (mock.request.formData) {
+                    //Send the request form data
+                    options.payload = mock.request.formData;
+                    //Set the Content-Type as application/x-www-form-urlencoded
+                    options.headers = options.headers || {};
+                    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
                 }<%}%>
                 // If headers are present, set the headers.
                 if (mock.request.headers && mock.request.headers.length > 0) {
@@ -71,7 +76,7 @@ Test('<%=path%>', function (t) {
                     <% if (operation.validateResp) {
                     %>var Validator = require('is-my-json-valid');
                     var validate = Validator(api.paths['<%=path%>']['<%=operation.method%>']['responses']['<%=operation.response%>']['schema']);
-                    t.ok(validate(res.payload), 'Valid response');
+                    t.ok(validate(res.result || res.payload), 'Valid response');
                     <%}%>t.end();
                 });
             });

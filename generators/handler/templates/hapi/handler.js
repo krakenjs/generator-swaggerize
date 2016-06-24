@@ -1,4 +1,5 @@
 'use strict';
+var dataProvider = require('<%=dataPath%>');
 /**
  * Operations on <%=path%>
  */
@@ -21,13 +22,12 @@ module.exports = {
          */
         var status = <%=statusStr%>;
         var provider = dataProvider['<%=operation.method%>']['<%=resp%>'];
-        provider(req, res, function (err, data) {
+        provider(req, reply, function (err, data) {
             if (err) {
                 next(err);
                 return;
             }
-            res.status(status).send(data);
-            reply(data).code(status);
+            reply(data && data.responses).code(status);
         });<%} else {%>
         var status = 501;
         var data = {};
