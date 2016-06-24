@@ -1,6 +1,5 @@
 'use strict';
 var Generators = require('yeoman-generator');
-var Parser = require('swagger-parser');
 var Path = require('path');
 var Util = require('../../lib/util');
 var RouteGen = require('../../lib/routegen');
@@ -22,10 +21,11 @@ module.exports = Generators.Base.extend({
         apiPath: function () {
             var done = this.async();
             this.apiPath = this.options.apiPath;
+            this.refApi = this.options.refApi;
             this.api = this.options.api;
-            if (!this.api && this.apiPath) {
+            if ((!this.api || !this.refApi) && this.apiPath) {
                 //If API is not passed as an option and the apiPath is valid, then, validate the api Spec.
-                this._validateSpec(done);
+                Util.validateApi(this, done);
                 return;
             }
             done();
@@ -33,17 +33,6 @@ module.exports = Generators.Base.extend({
         sefDefaults: function () {
             Util.sefDefaults(this);
         }
-    },
-    _validateSpec: function (done) {
-        var self = this;
-        Parser.validate(this.apiPath, function (error, api) {
-            if (error) {
-                done(error);
-                return;
-            }
-            self.api = api;
-            done();
-        });
     },
     prompting: function () {
         var done = this.async();
@@ -56,7 +45,7 @@ module.exports = Generators.Base.extend({
             });
             //parse and validate the Swagger API entered by the user.
             if (answers.apiPath) {
-                this._validateSpec(done);
+                Util.validateApi(self, done);
             } else {
                 done();
             }
@@ -64,25 +53,14 @@ module.exports = Generators.Base.extend({
     },
     writing: {
         config: function () {
-            var self = this;
-            var done = this.async();
             //Write to local config file only if the API is already validated
             //Dereferenced and resolved $ref objects cannot be used in the local copy.
             //So use `parse` API and then stringify the Objects to json format.
-            if(this.api) {
+            if(this.refApi) {
                 //Write the contents of the apiPath location to local config file.
-                Parser.parse(this.apiPath, function (error, api) {
-                    if (error) {
-                        done(error);
-                        return;
-                    }
-                    //Write as a JSON file.
-                    //TODO handle the yml file usecase
-                    self.write(self.apiConfigPath, JSON.stringify(api, null, 4));
-                    done();
-                });
-            } else {
-                done();
+                //always Write as a JSON file.
+                //TODO handle the yml file usecase
+                this.write(this.apiConfigPath, JSON.stringify(this.refApi, null, 4));
             }
         },
         mockgen: function () {

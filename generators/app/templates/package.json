@@ -1,16 +1,16 @@
 {
-    "name" : "<%= slugAppName %>",
-    "description" : "",
-    "version" : "1.0.0",
-    "author" : "<%= creatorName %> <<%= email %>>",
-    "contributors" : [],
-    "repository" : {
-        "type" : "git",
-        "url" : "git://github.com/<%= githubUser %>/<%= slugAppName %>.git"
+    "name": "<%= slugAppName %>",
+    "description": "",
+    "version": "1.0.0",
+    "author": "<%= creatorName %> <<%= email %>>",
+    "contributors": [],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/<%= githubUser %>/<%= slugAppName %>.git"
     },
-    "bugs" : "http://github.com/<%= githubUser %>/<%= slugAppName %>/issues",
-    "publishConfig" : {
-        "registry" : "https://registry.npmjs.org"
+    "bugs": "http://github.com/<%= githubUser %>/<%= slugAppName %>/issues",
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org"
     },
     "dependencies": {<% if (framework === 'express') {%>
         "express": "^4.0.0",
@@ -20,7 +20,7 @@
         "swaggerize-hapi": "^2.0.0-"<%}%><% if (framework === 'restify') {%>
         "swaggerize-restify": "^2.0.0",
         "restify": "^4.0.0"<%}%>,
-        "swagmock": "~0.0.1"
+        "swagmock": "~0.0.2"
     },
     "devDependencies": {
         "eslint": "^2",
@@ -37,5 +37,5 @@
         "lint": "eslint .",
         "regenerate": "yo swaggerize:test --framework <%=framework%> --apiPath <%=apiPathRel%>"
     },
-    "main" : "./server"
+    "main": "./server"
 }

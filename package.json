@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "tape test/*.js",
-    "lint": "eslint .",
+    "lint": "eslint . --ignore-pattern templates",
     "cover": "istanbul cover tape -- test/*.js"
   },
   "repository": {
@@ -47,7 +47,9 @@
   "devDependencies": {
     "eslint": "^2.11.1",
     "istanbul": "^0.4.3",
-    "tape": "^4.5.1"
+    "tape": "^4.5.1",
+    "yeoman-assert": "^2.2.1",
+    "yeoman-test": "^1.4.0"
   },
   "dependencies": {
     "swagger-parser": "^3.4.1",
@@ -56,6 +58,8 @@
   },
   "files": [
     "generators/app",
-    "generators/update"
+    "generators/data",
+    "generators/handler",
+    "generators/test"
   ]
 }

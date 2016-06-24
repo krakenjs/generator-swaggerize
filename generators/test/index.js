@@ -1,6 +1,5 @@
 'use strict';
 var Generators = require('yeoman-generator');
-var Parser = require('swagger-parser');
 var Path = require('path');
 var Util = require('../../lib/util');
 var Frameworks = Util.Frameworks;
@@ -28,9 +27,10 @@ module.exports = Generators.Base.extend({
             var done = this.async();
             this.apiPath = this.options.apiPath;
             this.api = this.options.api;
-            if (!this.api && this.apiPath) {
+            this.refApi = this.options.refApi;
+            if ((!this.api || !this.refApi) && this.apiPath) {
                 //If API is not passed as an option and the apiPath is valid, then, validate the api Spec.
-                this._validateSpec(done);
+                Util.validateApi(this, done);
                 return;
             }
             done();
@@ -38,17 +38,6 @@ module.exports = Generators.Base.extend({
         sefDefaults: function () {
             Util.sefDefaults(this);
         }
-    },
-    _validateSpec: function (done) {
-        var self = this;
-        Parser.validate(this.apiPath, function (error, api) {
-            if (error) {
-                done(error);
-                return;
-            }
-            self.api = api;
-            done();
-        });
     },
     prompting: function () {
         var done = this.async();
@@ -62,7 +51,7 @@ module.exports = Generators.Base.extend({
 
             //parse and validate the Swagger API entered by the user.
             if (answers.apiPath) {
-                this._validateSpec(done);
+                Util.validateApi(self, done);
             } else {
                 done();
             }
@@ -82,6 +71,7 @@ module.exports = Generators.Base.extend({
             this.composeWith('swaggerize:handler', {
                 options: {
                     api: this.api,
+                    refApi: this.refApi,
                     apiPath: this.apiPath,
                     handlerPath: this.handlerPath,
                     dataPath: this.dataPath,

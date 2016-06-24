@@ -1,6 +1,5 @@
 'use strict';
 var Generators = require('yeoman-generator');
-var Parser = require('swagger-parser');
 var Path = require('path');
 var _ = require('underscore.string');
 var Util = require('../../lib/util');
@@ -26,7 +25,7 @@ module.exports = Generators.Base.extend({
             var done = this.async();
             this.apiPath = this.options.apiPath;
             if (this.apiPath) {
-                this._validateSpec(done);
+                Util.validateApi(this, done);
             } else {
                 done();
             }
@@ -34,17 +33,6 @@ module.exports = Generators.Base.extend({
         sefDefaults: function () {
             Util.sefDefaults(this);
         }
-    },
-    _validateSpec: function (done) {
-        var self = this;
-        Parser.validate(this.apiPath, function (error, api) {
-            if (error) {
-                done(error);
-                return;
-            }
-            self.api = api;
-            done();
-        });
     },
     prompting: function () {
         var done = this.async();
@@ -57,7 +45,7 @@ module.exports = Generators.Base.extend({
             });
             //parse and validate the Swagger API entered by the user.
             if (answers.apiPath) {
-                this._validateSpec(done);
+                Util.validateApi(self, done);
             } else {
                 done();
             }
@@ -104,6 +92,7 @@ module.exports = Generators.Base.extend({
             this.composeWith('swaggerize:test', {
                 options: {
                     api: this.api,
+                    refApi: this.refApi,
                     apiPath: this.apiPath,
                     apiConfigPath: this.apiConfigPath,
                     handlerPath: this.handlerPath,
