@@ -65,6 +65,21 @@ Generates a new swaggerize application
        .
        .
 ```
+
+If you want to generate (or regenerate) only a specific component, you can use `swaggerize` sub generators.
+
+- `yo swaggerize:data`
+
+Generates `data` providers based on `paths` and `responses` in swagger api document.
+
+- `yo swaggerize:handler`
+
+Generates `handlers` based on `paths` in swagger api document. (`data` providers are also generated as a pre step)
+
+- `yo swaggerize:test`
+
+Generates unit `tests` based on `paths`, `parameters` and `responses` in swagger api document. (`handlers` and `data` providers are also generated as a pre step)
+
 #### Project structure
 
 - `/config` - A copy of the swagger api document file input, will be generated at `/config/swagger.json`.
@@ -87,7 +102,6 @@ More details or handlers and routing:
 A data file will be generated corresponding to every a `path` definition of the swagger api (`paths`).
 
 By default [Response Mock generator](https://github.com/subeeshcbabu/swagmock#responses) is used to provide the data based on the `responses` definition of swagger api.
-
 Developers should replace these default mock data generators with actual data feeds, based on the functionality.
 
 ##### Unit tests
@@ -103,7 +117,7 @@ By default [Request Mock generator](https://github.com/subeeshcbabu/swagmock#req
 - `--handlerPath` - specify the path to generate the handler files. By default `handlers` directory.
 - `--dataPath` - specify the path to generate the data files. By default `data` directory.
 - `--testPath` - specify the path to generate the unit test files. By default `tests` directory.
-- '--skip-npm-install' - To skip the default `npm install` on the generated project.
+- `--skip-npm-install` - To skip the default `npm install` on the generated project.
 
 #### Prompts
 
