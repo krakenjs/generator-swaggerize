@@ -33,8 +33,8 @@ module.exports = Generators.Base.extend({
             }
             done();
         },
-        sefDefaults: function () {
-            Util.sefDefaults(this);
+        setDefaults: function () {
+            Util.setDefaults(this);
         }
     },
     prompting: function () {
