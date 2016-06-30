@@ -57,7 +57,7 @@ module.exports = Generators.Base.extend({
         if (this.appName && Path.basename(oldRoot) !== this.appName) {
             this.destinationRoot(Path.join(oldRoot, this.appName));
             //Reset the defaults
-            Util.sefDefaults(this);
+            Util.setDefaults(this);
         }
         this.slugAppName = _.slugify(this.appName);
     },
