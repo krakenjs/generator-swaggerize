@@ -3,13 +3,13 @@ var Test = require('tape');
 var Hapi = require('hapi');
 var Swaggerize = require('swaggerize-hapi');
 var Path = require('path');
-var Mockgen = require('<%=mockgenPath%>');
+var Mockgen = require('<%=mockgenPath.replace(/\\/g,'/')%>');
 var Parser = require('swagger-parser');
 /**
  * Test for <%=path%>
  */
 Test('<%=path%>', function (t) {
-    var apiPath = Path.resolve(__dirname, '<%=apiPathRel%>');
+    var apiPath = Path.resolve(__dirname, '<%=apiPathRel.replace(/\\/g,'/')%>');
     var server;
 
     Parser.validate(apiPath, function (err, api) {
@@ -23,7 +23,7 @@ Test('<%=path%>', function (t) {
                 register: Swaggerize,
                 options: {
                     api: apiPath,
-                    handlers: Path.join(__dirname, '<%=handlerDir%>')
+                    handlers: Path.join(__dirname, '<%=handlerDir.replace(/\\/g,'/')%>')
                 }
             }, function (err) {
                 t.error(err, 'No error.');

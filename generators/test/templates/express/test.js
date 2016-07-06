@@ -5,13 +5,13 @@ var BodyParser = require('body-parser');
 var Swaggerize = require('swaggerize-express');
 var Path = require('path');
 var Request = require('supertest');
-var Mockgen = require('<%=mockgenPath%>');
+var Mockgen = require('<%=mockgenPath.replace(/\\/g,'/')%>');
 var Parser = require('swagger-parser');
 /**
  * Test for <%=path%>
  */
 Test('<%=path%>', function (t) {
-    var apiPath = Path.resolve(__dirname, '<%=apiPathRel%>');
+    var apiPath = Path.resolve(__dirname, '<%=apiPathRel.replace(/\\/g,'/')%>');
     var App = Express();
     App.use(BodyParser.json());
     App.use(BodyParser.urlencoded({
@@ -19,7 +19,7 @@ Test('<%=path%>', function (t) {
     }));
     App.use(Swaggerize({
         api: apiPath,
-        handlers: Path.resolve(__dirname, '<%=handlerDir%>')
+        handlers: Path.resolve(__dirname, '<%=handlerDir.replace(/\\/g,'/')%>')
     }));
     Parser.validate(apiPath, function (err, api) {
         t.error(err, 'No parse error');

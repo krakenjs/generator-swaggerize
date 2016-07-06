@@ -35,7 +35,7 @@
         "test": "tape 'tests/**/*.js'",
         "cover": "istanbul cover tape -- 'tests/**/*.js'",
         "lint": "eslint .",
-        "regenerate": "yo swaggerize:test --framework <%=framework%> --apiPath <%=apiPathRel%>"
+        "regenerate": "yo swaggerize:test --framework <%=framework%> --apiPath '<%=apiPathRel.replace(/\\/g,'/')%>'"
     },
     "main": "./server"
 }

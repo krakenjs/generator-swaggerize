@@ -1,5 +1,5 @@
 'use strict';
-var dataProvider = require('<%=dataPath%>');
+var dataProvider = require('<%=dataPath.replace(/\\/g,'/')%>');
 /**
  * Operations on <%=path%>
  */

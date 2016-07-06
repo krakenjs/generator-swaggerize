@@ -13,8 +13,8 @@ Server.connection({
 Server.register({
     register: Swaggerize,
     options: {
-        api: Path.resolve('<%=apiPathRel%>'),
-        handlers: Path.resolve('<%=handlerPath%>')
+        api: Path.resolve('<%=apiPathRel%>.replace(/\\/g,'/')'),
+        handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')
     }
 }, function () {
     Server.start(function () {

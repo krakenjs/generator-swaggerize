@@ -1,5 +1,5 @@
 'use strict';
-var Mockgen = require('<%=mockgenPath%>');
+var Mockgen = require('<%=mockgenPath.replace(/\\/g,'/')%>');
 /**
  * Operations on <%=path%>
  */

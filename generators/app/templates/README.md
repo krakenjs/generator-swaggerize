@@ -1,3 +1,3 @@
 # <%= slugAppName %>
 
-Swagger api [location](<%= apiPathRel %>)
+Swagger api [location](<%= apiPathRel.replace(/\\/g,'/') %>)

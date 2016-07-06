@@ -99,7 +99,7 @@ function appTest(tester, options) {
            ['package.json', new RegExp(/\"author\"\: \"lorem ipsum <loremipsum@awesome\.com>\"/)],
            ['package.json', new RegExp(/\"url\"\: \"git\:\/\/github\.com\/loremipsum\/mockapp\.git\"/)],
            ['package.json', new RegExp('\"' + options.framework + '\"\:')],
-           ['package.json', new RegExp('--framework ' + options.framework+ ' --apiPath ' + options.apiRelPath)],
+           ['package.json', new RegExp('--framework ' + options.framework+ ' --apiPath \'' + options.apiRelPath.replace(/\\/g,'/') + '\'')],
            ['README.md', new RegExp(/# mockapp/)]
         ]);
         t.end();
