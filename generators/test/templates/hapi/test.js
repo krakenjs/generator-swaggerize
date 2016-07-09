@@ -53,10 +53,7 @@ Test('<%=path%>', function (t) {
                     method: '<%=mt%>',
                     url: '<%=basePath%>' + mock.request.path
                 };
-                <%
-                //Send the request body for `post` and `put` operations
-                if (mt === 'post' || mt === 'put')
-                {%>if (mock.request.body) {
+                if (mock.request.body) {
                     //Send the request body
                     options.payload = mock.request.body;
                 } else if (mock.request.formData) {
@@ -65,7 +62,7 @@ Test('<%=path%>', function (t) {
                     //Set the Content-Type as application/x-www-form-urlencoded
                     options.headers = options.headers || {};
                     options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                }<%}%>
+                }
                 // If headers are present, set the headers.
                 if (mock.request.headers && mock.request.headers.length > 0) {
                     options.headers = mock.request.headers;
@@ -77,6 +74,7 @@ Test('<%=path%>', function (t) {
                     %>var Validator = require('is-my-json-valid');
                     var validate = Validator(api.paths['<%=path%>']['<%=operation.method%>']['responses']['<%=operation.response%>']['schema']);
                     t.ok(validate(res.result || res.payload), 'Valid response');
+                    t.error(validate.errors, 'No validation errors');
                     <%}%>t.end();
                 });
             });

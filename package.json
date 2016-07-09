@@ -55,11 +55,5 @@
     "swagger-parser": "^3.4.1",
     "underscore.string": "^3.3.4",
     "yeoman-generator": "^0.21.2"
-  },
-  "files": [
-    "generators/app",
-    "generators/data",
-    "generators/handler",
-    "generators/test"
-  ]
+  }
 }
