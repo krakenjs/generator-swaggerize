@@ -24,7 +24,7 @@
 
 work
 build
-test
+./test
 pids
 logs
 results
