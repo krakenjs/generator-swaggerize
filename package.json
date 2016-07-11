@@ -1,6 +1,6 @@
 {
   "name": "generator-swaggerize",
-  "version": "3.0.0-alpha.4",
+  "version": "3.0.0-alpha.5",
   "description": "Yeoman generator for openAPI(swagger) application",
   "main": "index.js",
   "scripts": {
