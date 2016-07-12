@@ -43,10 +43,7 @@ Test('<%=path%>', function (t) {
                 //Mock request Path templates({}) are resolved using path parameters
                 request = Request(server)
                     .<%=mt%>('<%=basePath%>' + mock.request.path);
-                <%
-                //Send the request body for `post` and `put` operations
-                if (mt === 'post' || mt === 'put') {
-                %>if (mock.request.body) {
+                if (mock.request.body) {
                     //Send the request body
                     request = request.send(mock.request.body);
                 } else if (mock.request.formData) {
@@ -54,7 +51,7 @@ Test('<%=path%>', function (t) {
                     request = request.send(mock.request.formData);
                     //Set the Content-Type as application/x-www-form-urlencoded
                     request = request.set('Content-Type', 'application/x-www-form-urlencoded');
-                }<%}%>
+                }
                 // If headers are present, set the headers.
                 if (mock.request.headers && mock.request.headers.length > 0) {
                     Object.keys(mock.request.headers).forEach(function (headerName) {
@@ -73,6 +70,7 @@ Test('<%=path%>', function (t) {
                         response = res.text;
                     }
                     t.ok(validate(response), 'Valid response');
+                    t.error(validate.errors, 'No validation errors');
                     <%}%>t.end();
                 });
             });
