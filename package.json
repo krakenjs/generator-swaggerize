@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "tape test/*.js",
-    "lint": "eslint . --ignore-pattern templates",
+    "lint": "eslint .",
     "cover": "istanbul cover tape -- test/*.js"
   },
   "repository": {
@@ -45,7 +45,7 @@
   },
   "homepage": "https://github.com/krakenjs/generator-swaggerize#readme",
   "devDependencies": {
-    "eslint": "^2.11.1",
+    "eslint": "^3",
     "istanbul": "^0.4.3",
     "tape": "^4",
     "yeoman-assert": "^2.2.1",
