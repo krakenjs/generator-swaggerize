@@ -17,7 +17,8 @@ App.use(BodyParser.urlencoded({
 
 App.use(Swaggerize({
     api: Path.resolve('<%=apiPathRel.replace(/\\/g,'/')%>'),
-    handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')
+    handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')<%if (security) {%>,
+    security: Path.resolve('<%=securityPath.replace(/\\/g,'/')%>')<%}%>
 }));
 
 Server.listen(8000, function () {

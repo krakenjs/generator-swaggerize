@@ -70,6 +70,7 @@ module.exports = Generators.Base.extend({
                     refApi: this.refApi,
                     apiPath: this.apiPath,
                     dataPath: this.dataPath,
+                    securityPath: this.securityPath,
                     apiConfigPath: this.apiConfigPath
                 }
             }, {

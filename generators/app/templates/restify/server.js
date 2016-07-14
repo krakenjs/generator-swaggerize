@@ -15,7 +15,8 @@ Server.get('/api', function (req, res) {
 
 Swaggerize(Server, {
     api: Path.resolve('<%=apiPathRel.replace(/\\/g,'/')%>'),
-    handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')
+    handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')<%if (security) {%>,
+    security: Path.resolve('<%=securityPath.replace(/\\/g,'/')%>')<%}%>
 });
 
 Server.listen(8000, function () {
