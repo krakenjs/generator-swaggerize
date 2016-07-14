@@ -16,7 +16,8 @@ module.exports = {
     options: mockOptions,
     dotFiles: dotFiles,
     projectFiles: projectFiles,
-    routeFiles: buildRouteFiles
+    routeFiles: buildRouteFiles,
+    securityFiles: buildSecurityFiles
 };
 
 function mockPrompt (name) {
@@ -59,8 +60,23 @@ function mockOptions() {
 function buildRouteFiles (prefix, api) {
     api = api || Path.join(__dirname, '../fixture/petstore_no_security.json');
     var apiObj = require(api);
-    var routes = Object.keys(apiObj.paths).map(function (pathStr) {
-        return Path.join(prefix, pathStr.replace(/^\/|\/$/g, '') + '.js');
-    });
+    var routes = [];
+    if (apiObj.paths) {
+        routes = Object.keys(apiObj.paths).map(function (pathStr) {
+            return Path.join(prefix, pathStr.replace(/^\/|\/$/g, '') + '.js');
+        });
+    }
+    return routes;
+}
+
+function buildSecurityFiles (prefix, api) {
+    api = api || Path.join(__dirname, '../fixture/petstore_no_security.json');
+    var apiObj = require(api);
+    var routes = [];
+    if (apiObj.securityDefinitions) {
+        routes = Object.keys(apiObj.securityDefinitions).map(function (pathStr) {
+            return Path.join(prefix, pathStr + '.js');
+        });
+    }
     return routes;
 }

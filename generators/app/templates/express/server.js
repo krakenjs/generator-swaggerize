@@ -12,7 +12,7 @@ var Server = Http.createServer(App);
 
 App.use(BodyParser.json());
 App.use(BodyParser.urlencoded({
-     "extended": true
+    extended: true
 }));
 
 App.use(Swaggerize({

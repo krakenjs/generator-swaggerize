@@ -57,6 +57,11 @@ function dataTest(tester, options) {
         Assert.file([ options.apiRelPath ]);
         t.end();
     });
+    //Secuirty files
+    tester.test('scaffold data files', function(t) {
+        Assert.file(Util.securityFiles(options.securityPath));
+        t.end();
+    });
 }
 /**
  * Test the generated `handler` files
