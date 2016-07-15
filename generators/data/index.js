@@ -4,6 +4,7 @@ var Path = require('path');
 var Util = require('../../lib/util');
 var RouteGen = require('../../lib/routegen');
 var Prompt = require('../prompt');
+var JsYaml = require('js-yaml');
 
 module.exports = Generators.Base.extend({
     constructor: function () {
@@ -45,6 +46,7 @@ module.exports = Generators.Base.extend({
             });
             //parse and validate the Swagger API entered by the user.
             if (answers.apiPath) {
+                Util.updateConfigPath(self);
                 Util.validateApi(self, done);
             } else {
                 done();
@@ -53,14 +55,18 @@ module.exports = Generators.Base.extend({
     },
     writing: {
         config: function () {
+            var apiContent;
             //Write to local config file only if the API is already validated
             //Dereferenced and resolved $ref objects cannot be used in the local copy.
             //So use `parse` API and then stringify the Objects to json format.
             if(this.refApi) {
                 //Write the contents of the apiPath location to local config file.
-                //always Write as a JSON file.
-                //TODO handle the yml file usecase
-                this.write(this.apiConfigPath, JSON.stringify(this.refApi, null, 4));
+                if (this.ymlApi) {
+                    apiContent = JsYaml.dump(this.refApi);
+                } else {
+                    apiContent = JSON.stringify(this.refApi, null, 4);
+                }
+                this.write(this.apiConfigPath, apiContent);
             }
         },
         security: function () {
@@ -80,8 +86,7 @@ module.exports = Generators.Base.extend({
                             description: def[defName].description
                         }
                     );
-                })
-
+                });
             }
         },
         mockgen: function () {

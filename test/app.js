@@ -19,7 +19,7 @@ Test('** app generator **', function (t) {
                 t.end();
             });
     });
-
+    
     t.test('scaffold app with options', function (t) {
         var options = {
             framework: 'hapi',
@@ -33,13 +33,26 @@ Test('** app generator **', function (t) {
                 t.end();
             })
             .on('end', function () {
-                var ops = Util.options();
-                //Use loadash merge or Object.assign()
-                ops.framework = options.framework;
-                ops.apiPath = options.apiPath;
-                TestSuite('app')(t, ops);
+                TestSuite('app')(t, Util.options(options));
                 t.end();
             });
     });
 
+    t.test('scaffold app yml file', function (t) {
+        var options = {
+            framework: 'hapi',
+            apiPath: Path.join(__dirname, './fixture/uber.yaml')
+        };
+        Helpers.run(Path.join( __dirname, '../generators/app'))
+            .withOptions(options)
+            .withPrompts(Util.prompt('app'))
+            .on('error', function (error) {
+                t.error(error);
+                t.end();
+            })
+            .on('end', function () {
+                TestSuite('app')(t, Util.options(options));
+                t.end();
+            });
+    });
 });

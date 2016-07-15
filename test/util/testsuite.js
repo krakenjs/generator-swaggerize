@@ -42,7 +42,7 @@ module.exports = function (generator) {
  */
 function dataTest(tester, options) {
     //Data files
-    var routeFiles = Util.routeFiles(options.dataPath);
+    var routeFiles = Util.routeFiles(options.dataPath, options.apiPath);
     tester.test('scaffold data files', function(t) {
         Assert.file(routeFiles);
         t.end();
@@ -59,7 +59,7 @@ function dataTest(tester, options) {
     });
     //Secuirty files
     tester.test('scaffold data files', function(t) {
-        Assert.file(Util.securityFiles(options.securityPath));
+        Assert.file(Util.securityFiles(options.securityPath, options.apiPath));
         t.end();
     });
 }
@@ -69,7 +69,7 @@ function dataTest(tester, options) {
 function handlerTest(tester, options) {
     //Data files
     tester.test('scaffold handler files', function(t) {
-        Assert.file(Util.routeFiles(options.handlerPath));
+        Assert.file(Util.routeFiles(options.handlerPath, options.apiPath));
         t.end();
     });
 }
@@ -79,7 +79,7 @@ function handlerTest(tester, options) {
 function testTest(tester, options) {
     //Data files
     tester.test('scaffold test files', function(t) {
-        Assert.file(Util.routeFiles(options.testPath));
+        Assert.file(Util.routeFiles(options.testPath, options.apiPath));
         t.end();
     });
 }

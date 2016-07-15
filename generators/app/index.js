@@ -45,6 +45,7 @@ module.exports = Generators.Base.extend({
             });
             //parse and validate the Swagger API entered by the user.
             if (answers.apiPath) {
+                Util.updateConfigPath(self);
                 Util.validateApi(self, done);
             } else {
                 done();

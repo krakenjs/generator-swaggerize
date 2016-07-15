@@ -23,7 +23,8 @@ Test('** test generator **', function (t) {
     t.test('scaffold test files - with options', function (t) {
         var options = {
             testPath: 'mytest',//Custom test path
-            apiPath: Path.join(__dirname, './fixture/petstore.json')
+            apiPath: Path.join(__dirname, './fixture/uber.yaml'),
+            framework: 'restify'
         };
         Helpers.run(Path.join( __dirname, '../generators/test'))
             .withOptions(options)
@@ -33,11 +34,7 @@ Test('** test generator **', function (t) {
                 t.end();
             })
             .on('end', function () {
-                var ops = Util.options();
-                //Use loadash merge or Object.assign()
-                ops.testPath = options.testPath;
-                ops.apiPath = options.apiPath;
-                TestSuite('test')(t, ops);
+                TestSuite('test')(t, Util.options(options));
                 t.end();
             });
     });
