@@ -15,7 +15,7 @@ Test('<%=path%>', function (t) {
     var App = Express();
     App.use(BodyParser.json());
     App.use(BodyParser.urlencoded({
-         "extended": true
+        extended: true
     }));
     App.use(Swaggerize({
         api: apiPath,

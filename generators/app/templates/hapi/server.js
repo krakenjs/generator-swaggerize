@@ -14,7 +14,8 @@ Server.register({
     register: Swaggerize,
     options: {
         api: Path.resolve('<%=apiPathRel.replace(/\\/g,'/')%>'),
-        handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')
+        handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')<%if (security) {%>,
+        security: Path.resolve('<%=securityPath.replace(/\\/g,'/')%>')<%}%>
     }
 }, function () {
     Server.start(function () {

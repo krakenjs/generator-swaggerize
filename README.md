@@ -71,6 +71,7 @@ If you want to generate (or regenerate) only a specific component, you can use `
 - `yo swaggerize:data`
 
 Generates `data` providers based on `paths` and `responses` in swagger api document.
+This also generates the `config/swagger.json` (A copy of the swagger api document file input) and `security` authorize handlers based on `securityDefinitions`.
 
 - `yo swaggerize:handler`
 
@@ -84,8 +85,35 @@ Generates unit `tests` based on `paths`, `parameters` and `responses` in swagger
 
 - `/config` - A copy of the swagger api document file input, will be generated at `/config/swagger.json`.
 - `/data` - Data providers for paths(routes).
-- `/handlers` - Application paths (routes) based on swagger api.
+- `/security` - Authorize handlers for security schemes declared by `securityDefinitions`.
+- `/handlers` - Application paths (routes) based on swagger api `paths`.
 - `/tests` - Unit tests for paths(routes).
+
+Example:
+
+```
+    ├── README.md
+    ├── .eslintrc
+    ├── .gitignore
+    ├── .npmignore
+    ├── config
+    │   └── swagger.json
+    ├── data
+    │   ├── mockgen.js
+    │   └── hellopath
+    │       └── {id}.js
+    ├── handlers
+    │   └── hellopath
+    │       └── {id}.js
+    ├── package.json
+    ├── security
+    │   ├── hello_Oauth2.js
+    │   └── hello_api_key.js
+    ├── server.js
+    └── tests
+        └── hellopath
+            └── {id}.js
+```
 
 ##### Handlers
 
@@ -104,6 +132,10 @@ A data file will be generated corresponding to every a `path` definition of the 
 By default [Response Mock generator](https://github.com/subeeshcbabu/swagmock#responses) is used to provide the data based on the `responses` definition of swagger api.
 Developers should replace these default mock data generators with actual data feeds, based on the functionality.
 
+##### Security authorize handlers
+
+A security authorize handler file will be generated corresponding to the declaration of the security schemes `securityDefinitions`.
+
 ##### Unit tests
 
 A unit test file will be generated corresponding to every a `path` definition of the swagger api (`paths`).
@@ -116,6 +148,7 @@ By default [Request Mock generator](https://github.com/subeeshcbabu/swagmock#req
 - `--apiPath` - specify the path to the swagger document.
 - `--handlerPath` - specify the path to generate the handler files. By default `handlers` directory.
 - `--dataPath` - specify the path to generate the data files. By default `data` directory.
+- `--securityPath` - specify the path to generate the security authorize files. By default `security` directory.
 - `--testPath` - specify the path to generate the unit test files. By default `tests` directory.
 - `--skip-npm-install` - To skip the default `npm install` on the generated project.
 

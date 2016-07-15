@@ -63,6 +63,27 @@ module.exports = Generators.Base.extend({
                 this.write(this.apiConfigPath, JSON.stringify(this.refApi, null, 4));
             }
         },
+        security: function () {
+            var self = this;
+            var def = this.api.securityDefinitions;
+            var securityPath;
+            if (def && Object.keys(def).length > 0) {
+                //Generate authorize handlers for securityDefinitions
+                Object.keys(def).forEach(function (defName) {
+                    securityPath = Path.join(self.securityPath, defName + '.js');
+                    self.fs.copyTpl(
+                        self.templatePath('security.js'),
+                        self.destinationPath(securityPath),
+                        {
+                            name: defName,
+                            type: def[defName].type,
+                            description: def[defName].description
+                        }
+                    );
+                })
+
+            }
+        },
         mockgen: function () {
             var tmpl = {
                 apiConfigPath: Util.relative(this.destinationPath(this.mockgenPath), this.apiConfigPath)

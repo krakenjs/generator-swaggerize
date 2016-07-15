@@ -12,12 +12,13 @@ var Server = Http.createServer(App);
 
 App.use(BodyParser.json());
 App.use(BodyParser.urlencoded({
-     "extended": true
+    extended: true
 }));
 
 App.use(Swaggerize({
     api: Path.resolve('<%=apiPathRel.replace(/\\/g,'/')%>'),
-    handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')
+    handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')<%if (security) {%>,
+    security: Path.resolve('<%=securityPath.replace(/\\/g,'/')%>')<%}%>
 }));
 
 Server.listen(8000, function () {
