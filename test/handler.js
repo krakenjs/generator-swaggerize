@@ -19,7 +19,7 @@ Test('** handler generator **', function (t) {
                 t.end();
             });
     });
-
+    
     t.test('scaffold handler with options', function (t) {
         var options = {
             handlerPath: 'myhandler',//Custom handler path
@@ -33,13 +33,8 @@ Test('** handler generator **', function (t) {
                 t.end();
             })
             .on('end', function () {
-                var ops = Util.options();
-                //Use loadash merge or Object.assign()
-                ops.handlerPath = options.handlerPath;
-                ops.apiPath = options.apiPath;
-                TestSuite('handler')(t, ops);
+                TestSuite('handler')(t, Util.options(options));
                 t.end();
             });
     });
-
 });

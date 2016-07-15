@@ -1,5 +1,7 @@
 'use strict';
 var Path = require('path');
+var Fs = require('fs');
+var JsYaml = require('js-yaml');
 
 var dotFiles = [
     '.eslintrc',
@@ -46,20 +48,25 @@ function mockPrompt (name) {
     return mockPrompts[name];
 }
 
-function mockOptions() {
+function mockOptions(options) {
+    var apiRelPath = './config/swagger.json';
+    options = options || {};
+    if ('.yml' === Path.extname(options.apiPath) || '.yaml' === Path.extname(options.apiPath)) {
+        apiRelPath = './config/swagger.yaml';
+    }
     return {
-        framework: 'express',
-        apiPath: Path.join(__dirname, '../fixture/petstore_no_security.json'),
-        apiRelPath: './config/swagger.json',
-        dataPath: './data',
-        handlerPath: './handlers',
-        testPath: './tests'
+        framework: options.framework || 'express',
+        apiPath: options.apiPath || Path.join(__dirname, '../fixture/petstore_no_security.json'),
+        apiRelPath: apiRelPath,
+        dataPath: options.dataPath || './data',
+        handlerPath: options.handlerPath || './handlers',
+        testPath: options.testPath || './tests',
+        securityPath: options.securityPath || './security'
     };
 }
 
 function buildRouteFiles (prefix, api) {
-    api = api || Path.join(__dirname, '../fixture/petstore_no_security.json');
-    var apiObj = require(api);
+    var apiObj = loadApi(api);
     var routes = [];
     if (apiObj.paths) {
         routes = Object.keys(apiObj.paths).map(function (pathStr) {
@@ -70,8 +77,7 @@ function buildRouteFiles (prefix, api) {
 }
 
 function buildSecurityFiles (prefix, api) {
-    api = api || Path.join(__dirname, '../fixture/petstore_no_security.json');
-    var apiObj = require(api);
+    var apiObj = loadApi(api);
     var routes = [];
     if (apiObj.securityDefinitions) {
         routes = Object.keys(apiObj.securityDefinitions).map(function (pathStr) {
@@ -79,4 +85,13 @@ function buildSecurityFiles (prefix, api) {
         });
     }
     return routes;
+}
+
+function loadApi (api) {
+    api = api || Path.join(__dirname, '../fixture/petstore_no_security.json');
+    if ('.yml' === Path.extname(api) || '.yaml' === Path.extname(api)) {
+        return JsYaml.load(Fs.readFileSync(api));
+    } else {
+        return require(api);
+    }
 }

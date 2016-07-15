@@ -23,7 +23,8 @@ Test('** data generator **', function (t) {
     t.test('scaffold data with options', function (t) {
         var options = {
             dataPath: 'mydata',//Custom data path
-            apiPath: Path.join(__dirname, './fixture/petstore.json')
+            apiPath: Path.join(__dirname, './fixture/petstore.json'),
+            securityPath: 'mysecurity'
         };
         Helpers.run(Path.join( __dirname, '../generators/data'))
             .withOptions(options)
@@ -33,13 +34,8 @@ Test('** data generator **', function (t) {
                 t.end();
             })
             .on('end', function () {
-                var ops = Util.options();
-                //Use loadash merge or Object.assign()
-                ops.dataPath = options.dataPath;
-                ops.apiPath = options.apiPath;
-                TestSuite('data')(t, ops);
+                TestSuite('data')(t, Util.options(options));
                 t.end();
             });
     });
-
 });
