@@ -5,6 +5,7 @@ var JsYaml = require('js-yaml');
 
 var dotFiles = [
     '.eslintrc',
+    '.eslintignore',
     '.gitignore',
     '.npmignore'
 ];
