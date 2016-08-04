@@ -1,7 +1,7 @@
 generator-swaggerize
 ====================
 
-Lead Maintainer: [Trevor Livingston](https://github.com/tlivings/)  
+Lead Maintainer: [Subeesh Chothendavida](https://github.com/subeeshcbabu/)  
 
 [![Build Status](https://travis-ci.org/krakenjs/generator-swaggerize.svg?branch=master)](https://travis-ci.org/krakenjs/generator-swaggerize)  
 [![NPM version](https://badge.fury.io/js/generator-swaggerize.png)](http://badge.fury.io/js/generator-swaggerize)  
