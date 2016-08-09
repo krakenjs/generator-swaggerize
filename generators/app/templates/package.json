@@ -19,7 +19,7 @@
         "hapi": "^9.0.0",
         "swaggerize-hapi": "^2.0.0-"<%}%><% if (framework === 'restify') {%>
         "swaggerize-restify": "^2.0.0",
-        "restify": "^4.0.0"<%}%>,
+        "restify": "^3.0.3"<%}%>,
         "swagmock": "~0.0.2"
     },
     "devDependencies": {
