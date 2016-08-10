@@ -1,13 +1,19 @@
 {
   "name": "generator-swaggerize",
-  "description": "Yeoman generator for swagger application with krakenjs/swaggerize tools.",
-  "version": "2.0.2",
-  "author": "Trevor Livingston <tlivings@gmail.com>",
-  "contributors": [
-    "Trevor Livingston <tlivings@gmail.com>",
-    "Subeesh Chothendavida <subeeshcbabu@yahoo.co.in>"
-  ],
+  "version": "3.0.0",
+  "description": "Yeoman generator for openAPI(swagger) application",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test/*.js",
+    "lint": "eslint .",
+    "cover": "istanbul cover tape -- test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krakenjs/generator-swaggerize.git"
+  },
   "keywords": [
+    "yeoman-generator",
     "yeoman",
     "generator",
     "yo",
@@ -28,42 +34,27 @@
     "oai",
     "openapi"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/krakenjs/generator-swaggerize.git"
+  "author": "Trevor Livingston <tlivings@gmail.com>",
+  "contributors": [
+    "Trevor Livingston <tlivings@gmail.com>",
+    "Subeesh Chothendavida <subeeshcbabu@yahoo.co.in>"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/krakenjs/generator-swaggerize/issues"
   },
-  "bugs": "http://github.com/krakenjs/generator-swaggerize/issues",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "engines": {
-    "node": "<=4.x"
+  "homepage": "https://github.com/krakenjs/generator-swaggerize#readme",
+  "devDependencies": {
+    "eslint": "^2",
+    "istanbul": "^0.4.3",
+    "tape": "^4",
+    "yeoman-assert": "^2.2.1",
+    "yeoman-test": "^1.4.0"
   },
   "dependencies": {
-    "enjoi": "^1.0.1",
-    "escodegen": "^1.4.1",
-    "esprima": "^2.7.0",
-    "express": "^4.13.3",
-    "js-yaml": "^3.2.6",
-    "restify": "^3.0.3",
-    "swagger-schema-official": "^2.0.0-",
-    "swaggerize-express": "^4.0.0",
-    "swaggerize-hapi": "^1.0.0-",
-    "swaggerize-restify": "^2.0.0-",
-    "swaggerize-routes": "^1.0.0",
-    "wreck": "^6.0.0",
-    "yeoman-generator": "~0.16.0"
-  },
-  "devDependencies": {
-    "tape": "^4.2.2",
-    "istanbul": "~0.4.0",
-    "jshint": "^2.4.1"
-  },
-  "scripts": {
-    "test": "tape test/*.js",
-    "cover": "istanbul cover tape -- test/*.js",
-    "lint": "jshint -c .jshintrc app/*.js"
-  },
-  "main": "./lib/index",
-  "license": "Apache-2.0"
+    "js-yaml": "^3.6.1",
+    "swagger-parser": "^3.4.1",
+    "underscore.string": "^3.3.4",
+    "yeoman-generator": "^0.21.2"
+  }
 }
