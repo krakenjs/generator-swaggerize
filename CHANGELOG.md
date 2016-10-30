@@ -1,3 +1,7 @@
+# Unreleased
+
+- Add `security` option by default to the unit test files generated for all the frameworks.
+
 # v3.0.0
 
 ## Breaking changes
