@@ -42,7 +42,7 @@ function mockPrompt (name) {
             apiPath: Path.join(__dirname, '../fixture/petstore_no_security.json')
         },
         test: {
-            framework: 'restify',
+            framework: 'express',
             apiPath: Path.join(__dirname, '../fixture/petstore_no_security.json')
         }
     };

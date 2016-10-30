@@ -78,8 +78,19 @@ function handlerTest(tester, options) {
  */
 function testTest(tester, options) {
     //Data files
+    var testFiles = Util.routeFiles(options.testPath, options.apiPath);
     tester.test('scaffold test files', function(t) {
-        Assert.file(Util.routeFiles(options.testPath, options.apiPath));
+        Assert.file(testFiles);
+        t.end();
+    });
+    // Test file content
+    tester.test('test unitetst file content', function(t) {
+        var testFile = testFiles[0];
+        Assert.fileContent([
+            [testFile, new RegExp(options.framework, 'i')],
+            [testFile, new RegExp('swaggerize-' + options.framework, 'i')],
+            [testFile, new RegExp(options.handlerPath, 'i')]
+        ]);
         t.end();
     });
 }
