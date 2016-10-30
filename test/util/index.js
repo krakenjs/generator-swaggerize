@@ -52,7 +52,7 @@ function mockPrompt (name) {
 function mockOptions(options) {
     var apiRelPath = './config/swagger.json';
     options = options || {};
-    if ('.yml' === Path.extname(options.apiPath) || '.yaml' === Path.extname(options.apiPath)) {
+    if (options.apiPath && ('.yml' === Path.extname(options.apiPath) || '.yaml' === Path.extname(options.apiPath))) {
         apiRelPath = './config/swagger.yaml';
     }
     return {
