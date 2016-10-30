@@ -23,7 +23,8 @@ Test('<%=path%>', function (t) {
                 register: Swaggerize,
                 options: {
                     api: apiPath,
-                    handlers: Path.join(__dirname, '<%=handlerDir.replace(/\\/g,'/')%>')
+                    handlers: Path.join(__dirname, '<%=handlerDir.replace(/\\/g,'/')%>')<%if (security) {%>,
+                    security: Path.resolve('<%=securityPath.replace(/\\/g,'/')%>')<%}%>
                 }
             }, function (err) {
                 t.error(err, 'No error.');
