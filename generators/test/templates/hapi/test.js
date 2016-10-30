@@ -24,7 +24,7 @@ Test('<%=path%>', function (t) {
                 options: {
                     api: apiPath,
                     handlers: Path.join(__dirname, '<%=handlerDir.replace(/\\/g,'/')%>')<%if (security) {%>,
-                    security: Path.resolve('<%=securityPath.replace(/\\/g,'/')%>')<%}%>
+                    security: Path.resolve(__dirname, '<%=securityPath.replace(/\\/g,'/')%>')<%}%>
                 }
             }, function (err) {
                 t.error(err, 'No error.');

@@ -20,7 +20,7 @@ Test('<%=path%>', function (t) {
     App.use(Swaggerize({
         api: apiPath,
         handlers: Path.resolve(__dirname, '<%=handlerDir.replace(/\\/g,'/')%>')<%if (security) {%>,
-        security: Path.resolve('<%=securityPath.replace(/\\/g,'/')%>')<%}%>
+        security: Path.resolve(__dirname, '<%=securityPath.replace(/\\/g,'/')%>')<%}%>
     }));
     Parser.validate(apiPath, function (err, api) {
         t.error(err, 'No parse error');
