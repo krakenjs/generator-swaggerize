@@ -42,7 +42,7 @@ function mockPrompt (name) {
             apiPath: Path.join(__dirname, '../fixture/petstore_no_security.json')
         },
         test: {
-            framework: 'restify',
+            framework: 'express',
             apiPath: Path.join(__dirname, '../fixture/petstore_no_security.json')
         }
     };
@@ -52,7 +52,7 @@ function mockPrompt (name) {
 function mockOptions(options) {
     var apiRelPath = './config/swagger.json';
     options = options || {};
-    if ('.yml' === Path.extname(options.apiPath) || '.yaml' === Path.extname(options.apiPath)) {
+    if (options.apiPath && ('.yml' === Path.extname(options.apiPath) || '.yaml' === Path.extname(options.apiPath))) {
         apiRelPath = './config/swagger.yaml';
     }
     return {

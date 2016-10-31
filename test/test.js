@@ -39,4 +39,23 @@ Test('** test generator **', function (t) {
             });
     });
 
+    t.test('scaffold test files - with security handler', function (t) {
+        var options = {
+            testPath: 'mytest',//Custom test path
+            apiPath: Path.join(__dirname, './fixture/petstore.json'),
+            framework: 'hapi'
+        };
+        Helpers.run(Path.join( __dirname, '../generators/test'))
+            .withOptions(options)
+            .withPrompts(Util.prompt('test'))
+            .on('error', function (error) {
+                t.error(error);
+                t.end();
+            })
+            .on('end', function () {
+                TestSuite('test')(t, Util.options(options), true);
+                t.end();
+            });
+    });
+
 });

@@ -100,7 +100,8 @@ module.exports = Generators.Base.extend({
                     testPath: this.testPath,
                     dataPath: this.dataPath,
                     securityPath: this.securityPath,
-                    framework: this.framework
+                    framework: this.framework,
+                    securith: this.security
                 }
             }, {
                 local: require.resolve('../test')

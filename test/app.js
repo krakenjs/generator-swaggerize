@@ -19,7 +19,7 @@ Test('** app generator **', function (t) {
                 t.end();
             });
     });
-    
+
     t.test('scaffold app with options', function (t) {
         var options = {
             framework: 'hapi',
@@ -33,7 +33,7 @@ Test('** app generator **', function (t) {
                 t.end();
             })
             .on('end', function () {
-                TestSuite('app')(t, Util.options(options));
+                TestSuite('app')(t, Util.options(options), true);
                 t.end();
             });
     });

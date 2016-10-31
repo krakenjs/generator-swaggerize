@@ -17,19 +17,19 @@ module.exports = function (generator) {
             dataTest(t, options);
             handlerTest(t, options);
         },
-        test : function (t, options) {
+        test : function (t, options, secuirty) {
             /**
              * Test the generated `test`, `handler` and `data` files
              */
             dataTest(t, options);
             handlerTest(t, options);
-            testTest(t, options);
+            testTest(t, options, secuirty);
         },
-        app : function (t, options) {
+        app : function (t, options, security) {
             /**
              * Test the generated `app`, `test`, `handler` and `data` files
              */
-            appTest(t, options);
+            appTest(t, options, security);
             dataTest(t, options);
             handlerTest(t, options);
             testTest(t, options);
@@ -76,17 +76,37 @@ function handlerTest(tester, options) {
 /**
  * Test the generated `test` files
  */
-function testTest(tester, options) {
+function testTest(tester, options, security) {
     //Data files
+    var testFiles = Util.routeFiles(options.testPath, options.apiPath);
+    var testFile = testFiles[0];
     tester.test('scaffold test files', function(t) {
-        Assert.file(Util.routeFiles(options.testPath, options.apiPath));
+        Assert.file(testFiles);
         t.end();
     });
+    // Test file content
+    tester.test('test unitetst file content', function(t) {
+        Assert.fileContent([
+            [testFile, new RegExp(options.framework, 'i')],
+            [testFile, new RegExp('swaggerize-' + options.framework, 'i')],
+            [testFile, new RegExp(options.handlerPath, 'i')]
+        ]);
+        t.end();
+    });
+    //If security is set to true test the securityPath
+    if (security) {
+        tester.test('test security path', function(t) {
+            Assert.fileContent([
+                [testFile, new RegExp(options.securityPath, 'i')]
+            ]);
+            t.end();
+        });
+    }
 }
 /**
  * Test the generated `app` files - `package.json`, `README.md` etc
  */
-function appTest(tester, options) {
+function appTest(tester, options, security) {
     //Dot files
     tester.test('scaffold dot files', function(t) {
         Assert.file(Util.dotFiles);
@@ -109,4 +129,22 @@ function appTest(tester, options) {
         ]);
         t.end();
     });
+    // Server file content
+    tester.test('test server.js file content', function(t) {
+        Assert.fileContent([
+            ['server.js', new RegExp(options.framework, 'i')],
+            ['server.js', new RegExp('swaggerize-' + options.framework, 'i')],
+            ['server.js', new RegExp(options.handlerPath, 'i')]
+        ]);
+        t.end();
+    });
+    //If security is set to true test the securityPath
+    if (security) {
+        tester.test('test security path', function(t) {
+            Assert.fileContent([
+                ['server.js', new RegExp(options.securityPath, 'i')]
+            ]);
+            t.end();
+        });
+    }
 }
