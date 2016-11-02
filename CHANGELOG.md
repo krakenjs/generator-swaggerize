@@ -1,5 +1,6 @@
 # Unreleased
 
+- Add the useful meta information, generator version, to the generated app's package.json.
 - Add `security` option by default to the unit test files generated for all the frameworks.
 
 # v3.0.0
