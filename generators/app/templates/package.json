@@ -37,5 +37,8 @@
         "lint": "eslint .",
         "regenerate": "yo swaggerize:test --framework <%=framework%> --apiPath '<%=apiPathRel.replace(/\\/g,'/')%>'"
     },
+    "generator-swaggerize": {
+        "version": "<%=generatorVersion%>"
+    },
     "main": "./server"
 }
