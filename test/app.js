@@ -16,6 +16,7 @@ Test('** app generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('app')(t, Util.options());
+                t.pass();
                 t.end();
             });
     });
@@ -34,6 +35,7 @@ Test('** app generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('app')(t, Util.options(options), true);
+                t.pass();
                 t.end();
             });
     });
@@ -52,6 +54,7 @@ Test('** app generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('app')(t, Util.options(options));
+                t.pass();
                 t.end();
             });
     });

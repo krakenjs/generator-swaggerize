@@ -140,7 +140,7 @@ function appTest(tester, options, security) {
         t.end();
     });
     //If security is set to true test the securityPath
-    if (security) {
+    if (security && options.framework !== 'hapi') {
         tester.test('test security path', function(t) {
             Assert.fileContent([
                 ['server.js', new RegExp(options.securityPath, 'i')]
