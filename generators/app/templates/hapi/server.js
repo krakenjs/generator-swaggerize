@@ -1,27 +1,27 @@
 'use strict';
 
-var Hapi = require('hapi');
-var Swaggerize = require('swaggerize-hapi');
-var Path = require('path');
+const Hapi = require('hapi');
+const Swaggerize = require('swaggerize-hapi');
+const Path = require('path');
 
-var Server = new Hapi.Server();
+const init = async function() {
+    const server = new Hapi.Server();
 
-Server.connection({
-    port: 8000
-});
-
-Server.register({
-    register: Swaggerize,
-    options: {
-        api: Path.resolve('<%=apiPathRel.replace(/\\/g,'/')%>'),
-        handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')<%if (security) {%>,
-        security: Path.resolve('<%=securityPath.replace(/\\/g,'/')%>')<%}%>
-    }
-}, function () {
-    Server.start(function () {
-        Server.plugins.swagger.setHost(Server.info.host + ':' + Server.info.port);
-        /* eslint-disable no-console */
-        console.log('App running on %s:%d', Server.info.host, Server.info.port);
-        /* eslint-disable no-console */
+    await server.register({
+        plugin: Swaggerize,
+        options: {
+            api: Path.resolve('<%=apiPathRel.replace(/\\/g,'/')%>'),
+            handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')
+        }
     });
+
+    await server.start();
+
+    return server;
+};
+
+init().then((server) => {
+    server.plugins.swagger.setHost(server.info.host + ':' + server.info.port);
+
+    server.log(['info'], `Server running on ${server.info.host}:${server.info.port}`);
 });

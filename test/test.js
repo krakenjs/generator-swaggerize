@@ -16,6 +16,7 @@ Test('** test generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('test')(t, Util.options());
+                t.pass();
                 t.end();
             });
     });
@@ -35,6 +36,7 @@ Test('** test generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('test')(t, Util.options(options));
+                t.pass();
                 t.end();
             });
     });
@@ -43,7 +45,7 @@ Test('** test generator **', function (t) {
         var options = {
             testPath: 'mytest',//Custom test path
             apiPath: Path.join(__dirname, './fixture/petstore.json'),
-            framework: 'hapi'
+            framework: 'express'
         };
         Helpers.run(Path.join( __dirname, '../generators/test'))
             .withOptions(options)
@@ -54,6 +56,7 @@ Test('** test generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('test')(t, Util.options(options), true);
+                t.pass();
                 t.end();
             });
     });

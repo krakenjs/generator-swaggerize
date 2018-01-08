@@ -16,6 +16,7 @@ Test('** data generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('data')(t, Util.options());
+                t.pass();
                 t.end();
             });
     });
@@ -35,6 +36,7 @@ Test('** data generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('data')(t, Util.options(options));
+                t.pass();
                 t.end();
             });
     });

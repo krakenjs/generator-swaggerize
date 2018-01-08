@@ -16,6 +16,7 @@ Test('** handler generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('handler')(t, Util.options());
+                t.pass();
                 t.end();
             });
     });
@@ -34,6 +35,7 @@ Test('** handler generator **', function (t) {
             })
             .on('end', function () {
                 TestSuite('handler')(t, Util.options(options));
+                t.pass();
                 t.end();
             });
     });
