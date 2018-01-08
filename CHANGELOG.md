@@ -1,3 +1,8 @@
+# v4.0.0
+
+- Support latest swaggerize-hapi.
+- [BREAKING] drop support for 0.12.
+
 # v3.1.0
 
 - Add the useful meta information, generator version, to the generated app's package.json.
