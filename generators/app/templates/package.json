@@ -18,7 +18,7 @@
         "swaggerize-express": "^4.0.0"<%}%><% if (framework === 'hapi') {%>
         "hapi": "^17.0.0",
         "boom": "^7.1.1",
-        "swaggerize-hapi": "^4.1.0-"<%}%><% if (framework === 'restify') {%>
+        "hapi-openapi": "^1.0.0"<%}%><% if (framework === 'restify') {%>
         "swaggerize-restify": "^2.0.0",
         "restify": "^3.0.3"<%}%><% if (framework !== 'hapi') {%>,
         "swagmock": "~0.0.2"<%}%>

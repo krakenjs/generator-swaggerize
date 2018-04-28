@@ -1,3 +1,7 @@
+# v4.1.0
+
+- Use `hapi-openapi` instead of `swaggerize-hapi`.
+
 # v4.0.0
 
 - Support latest swaggerize-hapi.

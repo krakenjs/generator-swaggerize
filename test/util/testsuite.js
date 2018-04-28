@@ -85,10 +85,9 @@ function testTest(tester, options, security) {
         t.end();
     });
     // Test file content
-    tester.test('test unitetst file content', function(t) {
+    tester.test('test unit test file content', function(t) {
         Assert.fileContent([
             [testFile, new RegExp(options.framework, 'i')],
-            [testFile, new RegExp('swaggerize-' + options.framework, 'i')],
             [testFile, new RegExp(options.handlerPath, 'i')]
         ]);
         t.end();
@@ -134,7 +133,6 @@ function appTest(tester, options, security) {
     tester.test('test server.js file content', function(t) {
         Assert.fileContent([
             ['server.js', new RegExp(options.framework, 'i')],
-            ['server.js', new RegExp('swaggerize-' + options.framework, 'i')],
             ['server.js', new RegExp(options.handlerPath, 'i')]
         ]);
         t.end();

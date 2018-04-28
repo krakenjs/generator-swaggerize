@@ -2,7 +2,7 @@
 
 const Test = require('tape');
 const Hapi = require('hapi');
-const Swaggerize = require('swaggerize-hapi');
+const HapiOpenAPI = require('hapi-openapi');
 const Path = require('path');
 const Mockgen = require('<%=mockgenPath.replace(/\\/g,'/')%>');
 
@@ -10,7 +10,7 @@ const Mockgen = require('<%=mockgenPath.replace(/\\/g,'/')%>');
  * Test for <%=path%>
  */
 Test('<%=path%>', function (t) {
-    
+
     <%operations.forEach(function (operation, i) {
         const mt = operation.method.toLowerCase();
     %>/**
@@ -25,7 +25,7 @@ Test('<%=path%>', function (t) {
         const server = new Hapi.Server();
 
         await server.register({
-            plugin: Swaggerize,
+            plugin: HapiOpenAPI,
             options: {
                 api: Path.resolve(__dirname, '<%=apiPathRel.replace(/\\/g,'/')%>'),
                 handlers: Path.join(__dirname, '<%=handlerDir.replace(/\\/g,'/')%>'),
@@ -66,7 +66,7 @@ Test('<%=path%>', function (t) {
         if (mock.request.headers && mock.request.headers.length > 0) {
             options.headers = mock.request.headers;
         }
-        
+
         const response = await server.inject(options);
 
         t.equal(response.statusCode, <%=(operation.response === 'default') ? 200 : operation.response%>, 'Ok response status');
