@@ -1,6 +1,6 @@
 {
   "name": "generator-swaggerize",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Yeoman generator for openAPI(swagger) application",
   "main": "index.js",
   "scripts": {
@@ -47,7 +47,7 @@
   "devDependencies": {
     "eslint": "^2",
     "istanbul": "^0.4.3",
-    "tape": "^4",
+    "tape": "^4.9.0",
     "yeoman-assert": "^2.2.1",
     "yeoman-test": "^1.4.0"
   },

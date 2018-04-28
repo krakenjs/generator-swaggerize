@@ -1,14 +1,14 @@
 'use strict';
 
 const Hapi = require('hapi');
-const Swaggerize = require('swaggerize-hapi');
+const HapiOpenAPI = require('hapi-openapi');
 const Path = require('path');
 
 const init = async function() {
     const server = new Hapi.Server();
 
     await server.register({
-        plugin: Swaggerize,
+        plugin: HapiOpenAPI,
         options: {
             api: Path.resolve('<%=apiPathRel.replace(/\\/g,'/')%>'),
             handlers: Path.resolve('<%=handlerPath.replace(/\\/g,'/')%>')
@@ -21,7 +21,7 @@ const init = async function() {
 };
 
 init().then((server) => {
-    server.plugins.swagger.setHost(server.info.host + ':' + server.info.port);
+    server.plugins.openapi.setHost(server.info.host + ':' + server.info.port);
 
     server.log(['info'], `Server running on ${server.info.host}:${server.info.port}`);
 });

@@ -13,7 +13,7 @@ Generates projects for:
 
 See also:
 - [swaggerize-express](https://github.com/krakenjs/swaggerize-express)
-- [swaggerize-hapi](https://github.com/krakenjs/swaggerize-hapi)
+- [hapi-openapi](https://github.com/krakenjs/hapi-openapi) (formerly `swaggerize-hapi`)
 
 ### Usage
 
