@@ -21,7 +21,8 @@
         "hapi-openapi": "^1.0.0"<%}%><% if (framework === 'restify') {%>
         "swaggerize-restify": "^2.0.0",
         "restify": "^3.0.3"<%}%><% if (framework !== 'hapi') {%>,
-        "swagmock": "~0.0.2"<%}%>
+        "cors":"^2.8.5",
+        "swagmock": "^1.0.0"<%}%>
     },
     "devDependencies": {
         "eslint": "^2",
